@@ -1,43 +1,63 @@
-
-public static void adicionarBarco(int[][] Tabuleiro, int L, int C, String Orientaçao, int TamanhoBarco){
+public static void adicionarBarco(int[][] Tabuleiro, int L, int C, String Orientaçao, Barco barco) {
     //Permite adicionar um barco ao tabuleiro se couber
+    if (barco.usado) {
+        EscreverTela("Esse Barco Já Foi Usado!");
+        return;
+    }
+    int TamanhoBarco = barco.tamanho;
     boolean NaoCabe = false;
-    if (Objects.equals(Orientaçao, "horizontal")){
-        for (int i=0; i < TamanhoBarco; i++){
-            int ColunaTeste = C +i;
-            if (Tabuleiro[L][ColunaTeste] == 0)
-                NaoCabe = false;
-            else{
+
+    if (Objects.equals(Orientaçao, "Horizontal")) {
+        if (C + TamanhoBarco > Tabuleiro[0].length) {
+            EscreverTela("Esse barco não cabe aqui!");
+            return;
+        }
+
+        for (int i = 0; i < TamanhoBarco; i++) {
+            int ColunaTeste = C + i;
+            if (Tabuleiro[L][ColunaTeste] != 0) {
                 NaoCabe = true;
+                break;
             }
         }
-        if (NaoCabe){
+
+        if (NaoCabe) {
             EscreverTela("O barco selecionado não cabe aqui");
-        } else {
-            for (int i=0; i < TamanhoBarco; i++){
-                int Coluna = C +i;
-                Tabuleiro[L][Coluna] = 2;
-            }
-            ConsumirBarco(TamanhoBarco);
+            return;
         }
-    } else if (Objects.equals(Orientaçao, "vertical")) {
-        for (int i=0; i < TamanhoBarco; i++){
-            int LinhaTeste = L +i;
-            if (Tabuleiro[LinhaTeste][C] == 0)
-                NaoCabe = false;
-            else{
+
+        for (int i = 0; i < TamanhoBarco; i++) {
+            int Coluna = C + i;
+            Tabuleiro[L][Coluna] = 2;
+        }
+
+        barco.usado = true;
+
+    } else if (Objects.equals(Orientaçao, "Vertical")) {
+        if (L + TamanhoBarco > Tabuleiro.length) {
+            EscreverTela("Esse barco não cabe aqui!");
+            return;
+        }
+
+        for (int i = 0; i < TamanhoBarco; i++) {
+            int LinhaTeste = L + i;
+            if (Tabuleiro[LinhaTeste][C] != 0){
                 NaoCabe = true;
+                break;
             }
         }
-        if (NaoCabe){
+
+        if (NaoCabe) {
             EscreverTela("O barco selecionado não cabe aqui!");
-        } else {
-            for (int i=0; i < TamanhoBarco; i++){
-                int Linha = L +i;
-                Tabuleiro[Linha][C] = 2;
-            }
-            ConsumirBarco(TamanhoBarco);
+            return;
         }
+
+        for (int i = 0; i < TamanhoBarco; i++) {
+            int Linha = L + i;
+            Tabuleiro[Linha][C] = 2;
+        }
+        barco.usado = true;
+
     }
 }
 
@@ -63,10 +83,6 @@ public static int JaFoiUsado(int[][] Tabuleiro, int L, int C){
     }
 }
 
-public static void ConsumirBarco(int TamanhoBarco){
-
-}
-
 public void CriarBarcos(Barco[] barcos){
     barcos[0] = new Barco("Porta-aviões", 5);
     barcos[1] = new Barco("Encouraçado", 4);
@@ -83,9 +99,9 @@ public void IniciarTabuleiro(int [][] Tabuleiro){
     }
 }
 
-public static void AtualizarTela(int L, int C, String Animaçao){
-
-}
+//public static void AtualizarTela(int L, int C, String Animaçao){
+//
+//}
 
 public static void EscreverTela(String Aviso){
 
@@ -99,9 +115,12 @@ public class Valores {
 class Barco{
     String nome;
     int tamanho;
+    boolean usado;
+
     Barco(String nome, int tamanho){
         this.nome = nome;
         this.tamanho = tamanho;
+        this.usado = false;
     }
 }
 
@@ -125,5 +144,38 @@ void main() {
     IniciarTabuleiro(tabuleiroPlayer1);
     IniciarTabuleiro(tabuleiroPlayer2);
 
+    for (int i = 0; i < barcosPlayer1.length; i++) {
+        System.out.print(barcosPlayer1[i].nome + " ");
+    }
+    System.out.println();
 
+    adicionarBarco(tabuleiroPlayer1, 0, 0, "Horizontal", barcosPlayer1[0]);
+    adicionarBarco(tabuleiroPlayer1, 1, 0, "Horizontal", barcosPlayer1[1]);
+    adicionarBarco(tabuleiroPlayer1, 2, 0, "Horizontal", barcosPlayer1[2]);
+    adicionarBarco(tabuleiroPlayer1, 3, 0, "Horizontal", barcosPlayer1[3]);
+    adicionarBarco(tabuleiroPlayer1, 4, 0, "Horizontal", barcosPlayer1[4]);
+
+    adicionarBarco(tabuleiroPlayer2, 0, 0, "Horizontal", barcosPlayer2[0]);
+    adicionarBarco(tabuleiroPlayer2, 1, 0, "Horizontal", barcosPlayer2[1]);
+    adicionarBarco(tabuleiroPlayer2, 2, 0, "Horizontal", barcosPlayer2[2]);
+    adicionarBarco(tabuleiroPlayer2, 3, 0, "Horizontal", barcosPlayer2[3]);
+    adicionarBarco(tabuleiroPlayer2, 4, 0, "Horizontal", barcosPlayer2[4]);
+
+
+    for (int i = 0; i < tabuleiroPlayer1.length; i++) {
+        for (int j = 0; j < tabuleiroPlayer1[0].length; j++) {
+            System.out.print(tabuleiroPlayer1[i][j] + " ");
+        }
+        System.out.println();
+    }
+    for (int i = 0; i < tabuleiroPlayer2.length; i++) {
+        for (int j = 0; j < tabuleiroPlayer2[0].length; j++) {
+            System.out.print(tabuleiroPlayer2[i][j] + " ");
+        }
+        System.out.println();
+    }
+    for (int i = 0; i < barcosPlayer1.length; i++) {
+        System.out.print(barcosPlayer1[i].nome + " ");
+    }
+    System.out.println();
 }
