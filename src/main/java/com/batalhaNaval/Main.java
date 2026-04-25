@@ -1,12 +1,19 @@
 package com.batalhaNaval;
 
 import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import java.util.Scanner;
 import java.util.Objects;
 
 public class Main extends Application {
 
+    int jogadorAtual=1;
 
     public static void adicionarBarco(int[][] Tabuleiro, int L, int C, String Orientaçao, Barco barco) {
         //Permite adicionar um barco ao tabuleiro se couber
@@ -109,6 +116,46 @@ public class Main extends Application {
             }
         }
     }
+    public static void atualizarInterface(int [][] tabuleiro, Button btn){
+        //atualiza todos os campos da tela
+        for (int i = 0; i < tabuleiro.length; i++) {
+            for (int j = 0; j < tabuleiro[0].length; j++) {
+                if (tabuleiro[i][j] == 0 || tabuleiro[i][j] == 2){
+                    btn.setStyle("-fx-background-color: lightblue;");
+                } else if (tabuleiro[i][j] == 1) {
+                    btn.setStyle("-fx-background-color: lightgray;");
+                } else if (tabuleiro[i][j] == 3){
+                    btn.setStyle("-fx-background-color: #ff5d5d");
+                }
+            }
+        }
+    }
+    public GridPane criarTabuleiro(int[][] tabuleiro, boolean ehPlayer1) {
+        GridPane grid = new GridPane();
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                Button btn = new Button();
+                btn.setPrefSize(40, 40);
+                int L = i;
+                int C = j;
+                btn.setOnAction(e -> {
+                    if (jogadorAtual == 1 && !ehPlayer1) {
+                        atirar(tabuleiro, L, C);
+                        jogadorAtual = 2;
+                        atualizarInterface(tabuleiro, btn);
+                    }
+                    else if (jogadorAtual == 2 && ehPlayer1) {
+                        atirar(tabuleiro, L, C);
+                        jogadorAtual = 1;
+                        atualizarInterface(tabuleiro, btn);
+                    }
+                });
+                grid.add(btn, j, i);
+            }
+        }
+
+        return grid;
+    }
 
     public static void PrintarTabela(int[][] tabela) {
         for (int i = 0; i < tabela.length; i++) {
@@ -143,7 +190,9 @@ public class Main extends Application {
             System.out.println();
         }
     }
-
+    public static void EscolherBarco(String barco){
+        //Deixa o ultimo barco clicado em memoria para uso do adicionar barco
+    }
     public static void EscreverTela(String Aviso) {
 
     }
@@ -168,24 +217,6 @@ public class Main extends Application {
     }
     @Override
     public void start(Stage stage) {
-        stage.setTitle("Batalha Naval");
-        stage.show();
-        rodarJogo();
-    }
-
-    public static void main(String[] args) {
-        launch();
-    }
-    public void rodarJogo() {
-        //Batalha Naval:
-        //Objetivo Principal:Criar um programa de batalha naval
-        //Objetivos secundarios:
-        // conexão multiplayer na rede local via sockets
-        // Tela feita usando JavaFX
-        // Menu para escolha de multiplayer ou singleplayer
-        // tela de configurações do jogo
-        // Implementar drag e click para colocar os barcos no tabuleiro
-
         int[][] tabuleiroPlayer1 = new int[10][10];
         int[][] tabuleiroPlayer2 = new int[10][10];
         Barco[] barcosPlayer1 = new Barco[5];
@@ -208,54 +239,32 @@ public class Main extends Application {
         adicionarBarco(tabuleiroPlayer2, 2, 0, "Horizontal", barcosPlayer2[2]);
         adicionarBarco(tabuleiroPlayer2, 3, 0, "Horizontal", barcosPlayer2[3]);
         adicionarBarco(tabuleiroPlayer2, 4, 0, "Horizontal", barcosPlayer2[4]);
+        //layout inicial
+        // duas caixas verticais uma para guardar os barcos no inicio do jogo e outra para a tabela
 
 
-        Scanner sc = new Scanner(System.in);
-        boolean atirou = false;
-        boolean won = false;
-        while (!won) {
+        GridPane gridP1 = criarTabuleiro(tabuleiroPlayer1, true);
+        GridPane gridP2 = criarTabuleiro(tabuleiroPlayer2, false);
 
-            atirou = false;
-            while (!atirou) {
-                Clear();
-                PrintarTabela(tabuleiroPlayer2);
-                Println("Jogador 1: Digite a linha para atirar: ");
-                int L = sc.nextInt();
-                L -= 1;
-                Println("Jogador 1: Digite a coluna para atirar");
-                int C = sc.nextInt();
-                C -= 1;
-                if (JaFoiUsado(tabuleiroPlayer2, L, C) == 0) {
-                    atirar(tabuleiroPlayer2, L, C);
-                    atirou = true;
-                }
-                if (atirou && checkarTabelaForWin(tabuleiroPlayer2)) {
-                    Println("Jogador 1 ganhou!");
-                    won = true;
-                }
-            }
-
-            if (!won) {
-                atirou = false;
-                while (!atirou) {
-                    Clear();
-                    PrintarTabela(tabuleiroPlayer1);
-                    Println("Jogador 2: Digite a linha para atirar: ");
-                    int L = sc.nextInt();
-                    L -= 1;
-                    Println("Jogador 2: Digite a coluna para atirar");
-                    int C = sc.nextInt();
-                    C -= 1;
-                    if (JaFoiUsado(tabuleiroPlayer1, L, C) == 0) {
-                        atirar(tabuleiroPlayer1, L, C);
-                        atirou = true;
-                    }
-                    if (atirou && checkarTabelaForWin(tabuleiroPlayer1)) {
-                        Println("Jogador 2 ganhou!");
-                        won = true;
-                    }
-                }
-            }
-        }
+        Label status = new Label("Vez do jogador"+jogadorAtual);
+        HBox grids = new HBox(20, gridP1, gridP2);
+        VBox root = new VBox(20, status, grids);
+        Scene tela = new Scene(root, 800, 600);
+        stage.setScene(tela);
+        stage.setTitle("Batalha Naval");
+        stage.show();
     }
+
+    public static void main(String[] args) {
+        launch();
+    }
+        //Batalha Naval:
+        //Objetivo Principal:Criar um programa de batalha naval
+        //Objetivos secundarios
+        // conexão multiplayer na rede local via sockets
+        // Tela feita usando JavaFX
+        // Menu para escolha de multiplayer ou singleplayer
+        // tela de configurações do jogo
+        // Implementar drag e click para colocar os barcos no tabuleiro
+
 }
