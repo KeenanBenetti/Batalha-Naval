@@ -133,11 +133,9 @@ public class Main extends Application {
 
     }
     public static void ReiniciarJogo(){
+        //futuramente irá reiniciar o jogo inteiro
+    }
 
-    }
-    public static void FecharPrograma(){
-        System.exit(0);
-    }
     public void TelaVencedor(String texto) {
         Label aviso = new Label(texto);
         aviso.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
