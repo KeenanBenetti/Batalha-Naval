@@ -41,7 +41,7 @@ public class Main extends Application {
         int TamanhoBarco = barco.tamanho;
         boolean NaoCabe = false;
 
-        if (Objects.equals(Orientaçao, "Horizontal")) {
+        if (Orientaçao.get().equals("Horizontal")) {
             if (C + TamanhoBarco > Tabuleiro[0].length) {
                 MensagemTela("Esse barco não cabe aqui!");
                 return false;
@@ -67,7 +67,7 @@ public class Main extends Application {
 
             barco.usado = true;
             return true;
-        } else if (Objects.equals(Orientaçao, "Vertical")) {
+        } else if (Orientaçao.get().equals("Vertical")) {
             if (L + TamanhoBarco > Tabuleiro.length) {
                 MensagemTela("Esse barco não cabe aqui!");
                 return false;
