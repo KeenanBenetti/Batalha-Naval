@@ -17,6 +17,8 @@ public class Main extends Application {
 
     IntegerProperty jogadorAtual= new SimpleIntegerProperty(1);
     private Stage primaryStage;
+    String BarcoSelecionado;
+
     public static void adicionarBarco(int[][] Tabuleiro, int L, int C, String Orientaçao, Barco barco) {
         //Permite adicionar um barco ao tabuleiro se couber
         if (barco.usado) {
@@ -151,6 +153,7 @@ public class Main extends Application {
         Scene cena = new Scene(root, 400, 200);
         primaryStage.setScene(cena);
     }
+
     public GridPane criarTabuleiro(int[][] tabuleiro, boolean ehPlayer1) {
         GridPane grid = new GridPane();
         for (int i = 0; i < 10; i++) {
@@ -213,16 +216,28 @@ public class Main extends Application {
 
     }
 
-    public static void Clear() {
-        for (int i = 0; i < 50; i++) {
-            System.out.println();
-        }
-    }
-    public static void EscolherBarco(String barco){
+    public static void EscolherBarco(String barco, IntegerProperty jogadorAtual){
         //Deixa o ultimo barco clicado em memoria para uso do adicionar barco
+        jogadorAtual.get();
+
     }
     public static void EscreverTela(String Aviso) {
 
+    }
+
+    public HBox criarBarquinhos(Barco[] barcosPlayer){
+        HBox barquinhos = new HBox(20);
+        for (int i = 0; i < barcosPlayer.length; i++) {
+            GridPane barquinho = new GridPane();
+            for (int j = 0; j < barcosPlayer[i].tamanho; j++) {
+                Button btn = new Button();
+                int finalI = i;//se o inteliJ disse, Não entendi mas ok
+                btn.setOnAction(e-> BarcoSelecionado = barcosPlayer[finalI].nome);
+                barquinho.add(btn, i, j);
+            }
+            barquinhos.getChildren().add(barquinho);
+        }
+        return barquinhos;
     }
 
     class Valores {
@@ -277,8 +292,13 @@ public class Main extends Application {
 
         Label status = new Label();
         status.textProperty().bind(jogadorAtual.asString("Vez do jogador %d"));
+        HBox barquinhosPlayer1 = criarBarquinhos(barcosPlayer1);
+        HBox barquinhosPlayer2 = criarBarquinhos(barcosPlayer2);
         HBox grids = new HBox(20, gridP1, gridP2);
-        VBox root = new VBox(20, status, grids);
+        VBox player2 = new VBox(gridP2, barquinhosPlayer2);
+        VBox player1 = new VBox(gridP1, barquinhosPlayer1);
+        HBox colunas = new HBox(40, player1, player2);
+        VBox root = new VBox(20, status, colunas);
         Scene tela = new Scene(root, 800, 600);
         stage.setScene(tela);
         stage.setTitle("Batalha Naval");
