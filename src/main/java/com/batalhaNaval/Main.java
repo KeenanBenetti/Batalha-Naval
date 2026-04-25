@@ -3,6 +3,8 @@ package com.batalhaNaval;
 import javafx.application.Application;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -27,11 +29,12 @@ public class Main extends Application {
     boolean Player2Done = false;
     Barco[] barcosPlayer1 = new Barco[5];
     Barco[] barcosPlayer2 = new Barco[5];
+    StringProperty Mensagem = new SimpleStringProperty();
 
-    public static boolean adicionarBarco(int[][] Tabuleiro, int L, int C, String Orientaçao, Barco barco) {
+    public boolean adicionarBarco(int[][] Tabuleiro, int L, int C, String Orientaçao, Barco barco) {
         //Permite adicionar um barco ao tabuleiro se couber
         if (barco.usado) {
-            EscreverTela("Esse Barco Já Foi Usado!");
+            MensagemTela("Esse Barco Já Foi Usado!");
             return false;
         }
         int TamanhoBarco = barco.tamanho;
@@ -39,7 +42,7 @@ public class Main extends Application {
 
         if (Objects.equals(Orientaçao, "Horizontal")) {
             if (C + TamanhoBarco > Tabuleiro[0].length) {
-                EscreverTela("Esse barco não cabe aqui!");
+                MensagemTela("Esse barco não cabe aqui!");
                 return false;
             }
 
@@ -52,7 +55,7 @@ public class Main extends Application {
             }
 
             if (NaoCabe) {
-                EscreverTela("O barco selecionado não cabe aqui");
+                MensagemTela("O barco selecionado não cabe aqui");
                 return false;
             }
 
@@ -65,7 +68,7 @@ public class Main extends Application {
             return true;
         } else if (Objects.equals(Orientaçao, "Vertical")) {
             if (L + TamanhoBarco > Tabuleiro.length) {
-                EscreverTela("Esse barco não cabe aqui!");
+                MensagemTela("Esse barco não cabe aqui!");
                 return false;
             }
 
@@ -78,7 +81,7 @@ public class Main extends Application {
             }
 
             if (NaoCabe) {
-                EscreverTela("O barco selecionado não cabe aqui!");
+                MensagemTela("O barco selecionado não cabe aqui!");
                 return false;
             }
 
@@ -97,20 +100,19 @@ public class Main extends Application {
             //Permite verificar se acertou ou não um barco
             if (Tabuleiro[L][C] == 2) {
                 Tabuleiro[L][C] = 3;
-                MensagemTela(L, C, "Explosao");
-                Println("Acertou");
+                MensagemTela("Acertou");
             } else if (Tabuleiro[L][C] == 0) {
                 Tabuleiro[L][C] = 1;
-                MensagemTela(L, C, "Agua");
-                Println("Errou");
+                MensagemTela( "Errou");
+                MensagemTela( "Errou");
             }
         }
     }
 
-    public static int JaFoiUsado(int[][] Tabuleiro, int L, int C) {
+    public int JaFoiUsado(int[][] Tabuleiro, int L, int C) {
         //verifica se o local já foi acertado antes
         if (Tabuleiro[L][C] == 1 || Tabuleiro[L][C] == 3) {
-            EscreverTela("Já Atirou Aí!");
+            MensagemTela("Já Atirou Aí!");
             return 1;
         } else {
             return 0;
@@ -200,7 +202,7 @@ public class Main extends Application {
                     }
                     else if ((jogadorAtual.get() == 1 && !ehPlayer1) || GameStatus.equals("Setup")) {
                         if (BarcoSelecionado == null) {
-                            EscreverTela("Selecione um barco primeiro!");
+                            MensagemTela("Selecione um barco primeiro!");
                             return;
                         }
                         if (!BarcoSelecionado.usado) {
@@ -209,13 +211,13 @@ public class Main extends Application {
                                 jogadorAtual.set(2);
                                 atualizarTabuleiroCompleto(tabuleiro, ehPlayer1 ? botoesP1 : botoesP2);
                             } else {
-                                EscreverTela("Tente novamente em outro lugar");
+                                MensagemTela("Tente novamente em outro lugar");
                             }
                         }
                     }
                     else if ((jogadorAtual.get() == 2 && ehPlayer1) || GameStatus.equals("Setup")) {
                         if (BarcoSelecionado == null) {
-                            EscreverTela("Selecione um barco primeiro!");
+                            MensagemTela("Selecione um barco primeiro!");
                             return;
                         }
                         if (!BarcoSelecionado.usado) {
@@ -224,7 +226,7 @@ public class Main extends Application {
                                 jogadorAtual.set(1);
                                 atualizarTabuleiroCompleto(tabuleiro, ehPlayer1 ? botoesP1 : botoesP2);
                             } else {
-                                EscreverTela("Tente novamente em outro lugar");
+                                MensagemTela("Tente novamente em outro lugar");
                             }
                         }
                     }
@@ -302,24 +304,17 @@ public class Main extends Application {
         return true;
     }
 
-    public static void Println(String texto) {
-        System.out.println(texto);
-    }
-
-    public static void MensagemTela(int L, int C, String Animaçao) {
-
+    public void MensagemTela(String texto) {
+        Mensagem.set(texto);
     }
 
     public void selecionarBarco(Barco barco) {
         if (barco.usado) {
-            EscreverTela("Esse barco já foi usado!");
+            MensagemTela("Esse barco já foi usado!");
             return;
         }
         BarcoSelecionado = barco;
-        EscreverTela("Selecionou: " + barco.nome);
-    }
-    public static void EscreverTela(String Aviso) {
-
+        MensagemTela("Selecionou: " + barco.nome);
     }
 
     public HBox criarBarquinhos(Barco[] barcosPlayer){
@@ -375,13 +370,19 @@ public class Main extends Application {
 
         Label status = new Label();
         status.textProperty().bind(jogadorAtual.asString("Vez do jogador %d"));
+        VBox statusBox = new VBox(20, status);
+        statusBox.setStyle("-fx-alignment: center");
         HBox barquinhosPlayer1 = criarBarquinhos(barcosPlayer1);
         HBox barquinhosPlayer2 = criarBarquinhos(barcosPlayer2);
         HBox grids = new HBox(20, gridP1, gridP2);
         VBox player2 = new VBox(gridP2, barquinhosPlayer2);
         VBox player1 = new VBox(gridP1, barquinhosPlayer1);
         HBox colunas = new HBox(40, player1, player2);
-        VBox root = new VBox(20, status, colunas);
+        Label mensagem = new Label();
+        mensagem.textProperty().bind(Mensagem);
+        VBox Caixamensagem = new VBox(20, mensagem);
+        Caixamensagem.setStyle("-fx-alignment: center");
+        VBox root = new VBox(20, statusBox, colunas, Caixamensagem);
         Scene tela = new Scene(root, 800, 600);
         stage.setScene(tela);
         stage.setTitle("Batalha Naval");
