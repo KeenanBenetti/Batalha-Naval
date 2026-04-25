@@ -1,6 +1,8 @@
 package com.batalhaNaval;
 
 import javafx.application.Application;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -13,8 +15,8 @@ import java.util.Objects;
 
 public class Main extends Application {
 
-    int jogadorAtual=1;
-
+    IntegerProperty jogadorAtual= new SimpleIntegerProperty(1);
+    private Stage primaryStage;
     public static void adicionarBarco(int[][] Tabuleiro, int L, int C, String Orientaçao, Barco barco) {
         //Permite adicionar um barco ao tabuleiro se couber
         if (barco.usado) {
@@ -118,17 +120,38 @@ public class Main extends Application {
     }
     public static void atualizarInterface(int [][] tabuleiro, Button btn){
         //atualiza todos os campos da tela
-        for (int i = 0; i < tabuleiro.length; i++) {
-            for (int j = 0; j < tabuleiro[0].length; j++) {
-                if (tabuleiro[i][j] == 0 || tabuleiro[i][j] == 2){
-                    btn.setStyle("-fx-background-color: lightblue;");
-                } else if (tabuleiro[i][j] == 1) {
-                    btn.setStyle("-fx-background-color: lightgray;");
-                } else if (tabuleiro[i][j] == 3){
-                    btn.setStyle("-fx-background-color: #ff5d5d");
-                }
-            }
+        int [] posicao = (int[]) btn.getUserData();
+        int L = posicao[0];
+        int C = posicao[1];
+        if (tabuleiro[L][C] == 0 || tabuleiro[L][C] == 2){
+            btn.setStyle("-fx-background-color: lightblue;");
+        } else if (tabuleiro[L][C] == 1) {
+            btn.setStyle("-fx-background-color: lightgray;");
+        } else if (tabuleiro[L][C] == 3){
+            btn.setStyle("-fx-background-color: #ff5d5d");
         }
+
+    }
+    public static void ReiniciarJogo(){
+
+    }
+    public static void FecharPrograma(){
+        System.exit(0);
+    }
+    public void TelaVencedor(String texto) {
+        Label aviso = new Label(texto);
+        aviso.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
+        Button reiniciar = new Button("Reiniciar");
+        reiniciar.setOnAction(e -> {
+            primaryStage.close();
+            ReiniciarJogo();
+        });
+        Button fechar = new Button("Fechar Jogo");
+        fechar.setOnAction(e -> System.exit(0));
+        HBox botoes = new HBox(20, reiniciar, fechar);
+        VBox root = new VBox(20, aviso, botoes);
+        Scene cena = new Scene(root, 400, 200);
+        primaryStage.setScene(cena);
     }
     public GridPane criarTabuleiro(int[][] tabuleiro, boolean ehPlayer1) {
         GridPane grid = new GridPane();
@@ -138,16 +161,23 @@ public class Main extends Application {
                 btn.setPrefSize(40, 40);
                 int L = i;
                 int C = j;
+                btn.setUserData(new int[]{L, C});
                 btn.setOnAction(e -> {
-                    if (jogadorAtual == 1 && !ehPlayer1) {
+                    if (jogadorAtual.get() == 1 && !ehPlayer1) {
                         atirar(tabuleiro, L, C);
-                        jogadorAtual = 2;
+                        jogadorAtual.set(2);
                         atualizarInterface(tabuleiro, btn);
+                        if (checkarTabelaForWin(tabuleiro)){
+                            TelaVencedor("Player 1 Venceu");
+                        }
                     }
-                    else if (jogadorAtual == 2 && ehPlayer1) {
+                    else if (jogadorAtual.get() == 2 && ehPlayer1) {
                         atirar(tabuleiro, L, C);
-                        jogadorAtual = 1;
+                        jogadorAtual.set(1);
                         atualizarInterface(tabuleiro, btn);
+                        if (checkarTabelaForWin(tabuleiro)){
+                            TelaVencedor("Player 2 Venceu");
+                        }
                     }
                 });
                 grid.add(btn, j, i);
@@ -197,7 +227,7 @@ public class Main extends Application {
 
     }
 
-    public class Valores {
+    class Valores {
         public static final int AGUA = 0;
         public static final int USADO = 1;
         public static final int BARCO = 2;
@@ -217,6 +247,7 @@ public class Main extends Application {
     }
     @Override
     public void start(Stage stage) {
+        this.primaryStage = stage;
         int[][] tabuleiroPlayer1 = new int[10][10];
         int[][] tabuleiroPlayer2 = new int[10][10];
         Barco[] barcosPlayer1 = new Barco[5];
@@ -246,7 +277,8 @@ public class Main extends Application {
         GridPane gridP1 = criarTabuleiro(tabuleiroPlayer1, true);
         GridPane gridP2 = criarTabuleiro(tabuleiroPlayer2, false);
 
-        Label status = new Label("Vez do jogador"+jogadorAtual);
+        Label status = new Label();
+        status.textProperty().bind(jogadorAtual.asString("Vez do jogador %d"));
         HBox grids = new HBox(20, gridP1, gridP2);
         VBox root = new VBox(20, status, grids);
         Scene tela = new Scene(root, 800, 600);
