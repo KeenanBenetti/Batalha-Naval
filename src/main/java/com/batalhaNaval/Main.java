@@ -10,20 +10,29 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import java.util.Scanner;
+
 import java.util.Objects;
 
 public class Main extends Application {
 
     IntegerProperty jogadorAtual= new SimpleIntegerProperty(1);
     private Stage primaryStage;
-    String BarcoSelecionado;
+    Barco BarcoSelecionado = null;
+    String GameStatus = "Setup";
+    String Orientaçao = "Horizontal";
+    boolean MostrarBarcos = true;
+    Button[][] botoesP1 = new Button[10][10];
+    Button[][] botoesP2 = new Button[10][10];
+    boolean Player1Done = false;
+    boolean Player2Done = false;
+    Barco[] barcosPlayer1 = new Barco[5];
+    Barco[] barcosPlayer2 = new Barco[5];
 
-    public static void adicionarBarco(int[][] Tabuleiro, int L, int C, String Orientaçao, Barco barco) {
+    public static boolean adicionarBarco(int[][] Tabuleiro, int L, int C, String Orientaçao, Barco barco) {
         //Permite adicionar um barco ao tabuleiro se couber
         if (barco.usado) {
             EscreverTela("Esse Barco Já Foi Usado!");
-            return;
+            return false;
         }
         int TamanhoBarco = barco.tamanho;
         boolean NaoCabe = false;
@@ -31,7 +40,7 @@ public class Main extends Application {
         if (Objects.equals(Orientaçao, "Horizontal")) {
             if (C + TamanhoBarco > Tabuleiro[0].length) {
                 EscreverTela("Esse barco não cabe aqui!");
-                return;
+                return false;
             }
 
             for (int i = 0; i < TamanhoBarco; i++) {
@@ -44,7 +53,7 @@ public class Main extends Application {
 
             if (NaoCabe) {
                 EscreverTela("O barco selecionado não cabe aqui");
-                return;
+                return false;
             }
 
             for (int i = 0; i < TamanhoBarco; i++) {
@@ -53,11 +62,11 @@ public class Main extends Application {
             }
 
             barco.usado = true;
-
+            return true;
         } else if (Objects.equals(Orientaçao, "Vertical")) {
             if (L + TamanhoBarco > Tabuleiro.length) {
                 EscreverTela("Esse barco não cabe aqui!");
-                return;
+                return false;
             }
 
             for (int i = 0; i < TamanhoBarco; i++) {
@@ -70,7 +79,7 @@ public class Main extends Application {
 
             if (NaoCabe) {
                 EscreverTela("O barco selecionado não cabe aqui!");
-                return;
+                return false;
             }
 
             for (int i = 0; i < TamanhoBarco; i++) {
@@ -78,20 +87,23 @@ public class Main extends Application {
                 Tabuleiro[Linha][C] = 2;
             }
             barco.usado = true;
-
+            return true;
         }
+        return false;
     }
 
-    public static void atirar(int[][] Tabuleiro, int L, int C) {
-        //Permite verificar se acertou ou não um barco
-        if (Tabuleiro[L][C] == 2) {
-            Tabuleiro[L][C] = 3;
-            AtualizarTela(L, C, "Explosao");
-            Println("Acertou");
-        } else if (Tabuleiro[L][C] == 0) {
-            Tabuleiro[L][C] = 1;
-            AtualizarTela(L, C, "Agua");
-            Println("Errou");
+    public void atirar(int[][] Tabuleiro, int L, int C) {
+        if(!GameStatus.equals("Setup")){
+            //Permite verificar se acertou ou não um barco
+            if (Tabuleiro[L][C] == 2) {
+                Tabuleiro[L][C] = 3;
+                MensagemTela(L, C, "Explosao");
+                Println("Acertou");
+            } else if (Tabuleiro[L][C] == 0) {
+                Tabuleiro[L][C] = 1;
+                MensagemTela(L, C, "Agua");
+                Println("Errou");
+            }
         }
     }
 
@@ -121,7 +133,7 @@ public class Main extends Application {
         }
     }
     public static void atualizarInterface(int [][] tabuleiro, Button btn){
-        //atualiza todos os campos da tela
+        //atualiza o local atirado
         int [] posicao = (int[]) btn.getUserData();
         int L = posicao[0];
         int C = posicao[1];
@@ -163,37 +175,119 @@ public class Main extends Application {
                 int L = i;
                 int C = j;
                 btn.setUserData(new int[]{L, C});
+
+                if (ehPlayer1) {
+                    botoesP1[i][j] = btn;
+                } else {
+                    botoesP2[i][j] = btn;
+                }
                 btn.setOnAction(e -> {
-                    if (jogadorAtual.get() == 1 && !ehPlayer1) {
+                    if ((jogadorAtual.get() == 1 && !ehPlayer1) || GameStatus.equals("Ready")) {
                         atirar(tabuleiro, L, C);
                         jogadorAtual.set(2);
-                        atualizarInterface(tabuleiro, btn);
-                        if (checkarTabelaForWin(tabuleiro)){
+                        atualizarTabuleiroCompleto(tabuleiro, ehPlayer1 ? botoesP1 : botoesP2);
+                        if (checkarTabelaForWin(tabuleiro)) {
                             TelaVencedor("Player 1 Venceu");
                         }
                     }
-                    else if (jogadorAtual.get() == 2 && ehPlayer1) {
+                    else if ((jogadorAtual.get() == 2 && ehPlayer1) || GameStatus.equals("Ready")) {
                         atirar(tabuleiro, L, C);
                         jogadorAtual.set(1);
-                        atualizarInterface(tabuleiro, btn);
-                        if (checkarTabelaForWin(tabuleiro)){
+                        atualizarTabuleiroCompleto(tabuleiro, ehPlayer1 ? botoesP1 : botoesP2);
+                        if (checkarTabelaForWin(tabuleiro)) {
                             TelaVencedor("Player 2 Venceu");
+                        }
+                    }
+                    else if ((jogadorAtual.get() == 1 && !ehPlayer1) || GameStatus.equals("Setup")) {
+                        if (BarcoSelecionado == null) {
+                            EscreverTela("Selecione um barco primeiro!");
+                            return;
+                        }
+                        if (!BarcoSelecionado.usado) {
+                            if (adicionarBarco(tabuleiro, L, C, Orientaçao, BarcoSelecionado)) {
+                                checkarStatusPlayer();
+                                jogadorAtual.set(2);
+                                atualizarTabuleiroCompleto(tabuleiro, ehPlayer1 ? botoesP1 : botoesP2);
+                            } else {
+                                EscreverTela("Tente novamente em outro lugar");
+                            }
+                        }
+                    }
+                    else if ((jogadorAtual.get() == 2 && ehPlayer1) || GameStatus.equals("Setup")) {
+                        if (BarcoSelecionado == null) {
+                            EscreverTela("Selecione um barco primeiro!");
+                            return;
+                        }
+                        if (!BarcoSelecionado.usado) {
+                            if (adicionarBarco(tabuleiro, L, C, Orientaçao, BarcoSelecionado)) {
+                                checkarStatusPlayer();
+                                jogadorAtual.set(1);
+                                atualizarTabuleiroCompleto(tabuleiro, ehPlayer1 ? botoesP1 : botoesP2);
+                            } else {
+                                EscreverTela("Tente novamente em outro lugar");
+                            }
                         }
                     }
                 });
                 grid.add(btn, j, i);
             }
         }
-
+        atualizarTabuleiroCompleto(tabuleiro, ehPlayer1 ? botoesP1 : botoesP2);
         return grid;
     }
 
-    public static void PrintarTabela(int[][] tabela) {
-        for (int i = 0; i < tabela.length; i++) {
-            for (int j = 0; j < tabela[0].length; j++) {
-                System.out.print(tabela[i][j] + " ");
+    public void checkarStatusPlayer(){
+        if (jogadorAtual.get() == 1){
+            for (int i = 0; i < barcosPlayer1.length; i++) {
+                if (!barcosPlayer1[i].usado){
+                    Player1Done = false;
+                    return;
+                }
             }
-            System.out.println();
+            Player1Done = true;
+            checkarStatusPlayers();
+        }
+        if (jogadorAtual.get() == 2){
+            for (int i = 0; i < barcosPlayer2.length; i++) {
+                if (!barcosPlayer2[i].usado){
+                    Player2Done = false;
+                    return;
+                }
+            }
+            Player2Done = true;
+            checkarStatusPlayers();
+        }
+    }
+
+    public void checkarStatusPlayers(){
+        if(Player1Done && Player2Done){
+            GameStatus = "Ready";
+        }
+    }
+
+    public void atualizarTabuleiroCompleto(int[][] tabuleiro, Button[][] botoes) {
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+
+                Button btn = botoes[i][j];
+
+                if (tabuleiro[i][j] == 0) {
+                    btn.setStyle("-fx-background-color: lightblue;"); // água
+                }
+                else if (tabuleiro[i][j] == 2) {
+                    if (MostrarBarcos) {
+                        btn.setStyle("-fx-background-color: green;"); // barco visível (debug)
+                    } else {
+                        btn.setStyle("-fx-background-color: lightblue;");
+                    }
+                }
+                else if (tabuleiro[i][j] == 1) {
+                    btn.setStyle("-fx-background-color: lightgray;");
+                }
+                else if (tabuleiro[i][j] == 3) {
+                    btn.setStyle("-fx-background-color: red;");
+                }
+            }
         }
     }
 
@@ -212,14 +306,17 @@ public class Main extends Application {
         System.out.println(texto);
     }
 
-    public static void AtualizarTela(int L, int C, String Animaçao) {
+    public static void MensagemTela(int L, int C, String Animaçao) {
 
     }
 
-    public static void EscolherBarco(String barco, IntegerProperty jogadorAtual){
-        //Deixa o ultimo barco clicado em memoria para uso do adicionar barco
-        jogadorAtual.get();
-
+    public void selecionarBarco(Barco barco) {
+        if (barco.usado) {
+            EscreverTela("Esse barco já foi usado!");
+            return;
+        }
+        BarcoSelecionado = barco;
+        EscreverTela("Selecionou: " + barco.nome);
     }
     public static void EscreverTela(String Aviso) {
 
@@ -232,7 +329,7 @@ public class Main extends Application {
             for (int j = 0; j < barcosPlayer[i].tamanho; j++) {
                 Button btn = new Button();
                 int finalI = i;//se o inteliJ disse, Não entendi mas ok
-                btn.setOnAction(e-> BarcoSelecionado = barcosPlayer[finalI].nome);
+                btn.setOnAction(e -> selecionarBarco(barcosPlayer[finalI]));
                 barquinho.add(btn, i, j);
             }
             barquinhos.getChildren().add(barquinho);
@@ -263,26 +360,12 @@ public class Main extends Application {
         this.primaryStage = stage;
         int[][] tabuleiroPlayer1 = new int[10][10];
         int[][] tabuleiroPlayer2 = new int[10][10];
-        Barco[] barcosPlayer1 = new Barco[5];
-        Barco[] barcosPlayer2 = new Barco[5];
 
         CriarBarcos(barcosPlayer1);
         CriarBarcos(barcosPlayer2);
         IniciarTabuleiro(tabuleiroPlayer1);
         IniciarTabuleiro(tabuleiroPlayer2);
 
-
-        adicionarBarco(tabuleiroPlayer1, 0, 0, "Horizontal", barcosPlayer1[0]);
-        adicionarBarco(tabuleiroPlayer1, 1, 0, "Horizontal", barcosPlayer1[1]);
-        adicionarBarco(tabuleiroPlayer1, 2, 0, "Horizontal", barcosPlayer1[2]);
-        adicionarBarco(tabuleiroPlayer1, 3, 0, "Horizontal", barcosPlayer1[3]);
-        adicionarBarco(tabuleiroPlayer1, 4, 0, "Horizontal", barcosPlayer1[4]);
-
-        adicionarBarco(tabuleiroPlayer2, 0, 0, "Horizontal", barcosPlayer2[0]);
-        adicionarBarco(tabuleiroPlayer2, 1, 0, "Horizontal", barcosPlayer2[1]);
-        adicionarBarco(tabuleiroPlayer2, 2, 0, "Horizontal", barcosPlayer2[2]);
-        adicionarBarco(tabuleiroPlayer2, 3, 0, "Horizontal", barcosPlayer2[3]);
-        adicionarBarco(tabuleiroPlayer2, 4, 0, "Horizontal", barcosPlayer2[4]);
         //layout inicial
         // duas caixas verticais uma para guardar os barcos no inicio do jogo e outra para a tabela
 
