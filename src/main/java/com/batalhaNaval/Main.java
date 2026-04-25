@@ -1,6 +1,7 @@
 package com.batalhaNaval;
 
 import javafx.application.Application;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -21,7 +22,7 @@ public class Main extends Application {
     private Stage primaryStage;
     Barco BarcoSelecionado = null;
     String GameStatus = "Setup";
-    String Orientaçao = "Horizontal";
+    StringProperty Orientaçao = new SimpleStringProperty("Horizontal");
     boolean MostrarBarcos = true;
     Button[][] botoesP1 = new Button[10][10];
     Button[][] botoesP2 = new Button[10][10];
@@ -31,7 +32,7 @@ public class Main extends Application {
     Barco[] barcosPlayer2 = new Barco[5];
     StringProperty Mensagem = new SimpleStringProperty();
 
-    public boolean adicionarBarco(int[][] Tabuleiro, int L, int C, String Orientaçao, Barco barco) {
+    public boolean adicionarBarco(int[][] Tabuleiro, int L, int C, StringProperty Orientaçao, Barco barco) {
         //Permite adicionar um barco ao tabuleiro se couber
         if (barco.usado) {
             MensagemTela("Esse Barco Já Foi Usado!");
@@ -134,6 +135,7 @@ public class Main extends Application {
             }
         }
     }
+
     public static void atualizarInterface(int [][] tabuleiro, Button btn){
         //atualiza o local atirado
         int [] posicao = (int[]) btn.getUserData();
@@ -148,6 +150,7 @@ public class Main extends Application {
         }
 
     }
+
     public static void ReiniciarJogo(){
         //futuramente irá reiniciar o jogo inteiro
     }
@@ -263,6 +266,7 @@ public class Main extends Application {
 
     public void checkarStatusPlayers(){
         if(Player1Done && Player2Done){
+            MostrarBarcos=false;
             GameStatus = "Ready";
         }
     }
@@ -329,7 +333,22 @@ public class Main extends Application {
             }
             barquinhos.getChildren().add(barquinho);
         }
+        Label lborientaçao = new Label();
+        lborientaçao.textProperty().bind(Bindings.concat("Orientação Atual: ", Orientaçao));
+        Button btn = new Button("Mudar Orientação");
+        btn.setOnAction(e->trocarOrientaçao());
+        VBox vbox = new VBox(20, btn, lborientaçao);
+        barquinhos.getChildren().add(vbox);
         return barquinhos;
+    }
+
+    public void trocarOrientaçao(){
+        if (Orientaçao.get().equals("Horizontal")){
+            Orientaçao.set("Vertical");
+
+        } else if (Orientaçao.get().equals("Vertical")) {
+            Orientaçao.set("Horizontal");
+        }
     }
 
     class Valores {
