@@ -187,7 +187,7 @@ public class Main extends Application {
                     botoesP2[i][j] = btn;
                 }
                 btn.setOnAction(e -> {
-                    if ((jogadorAtual.get() == 1 && !ehPlayer1) || GameStatus.equals("Ready")) {
+                    if ((jogadorAtual.get() == 1 && !ehPlayer1) && GameStatus.equals("Ready")) {
                         atirar(tabuleiro, L, C);
                         jogadorAtual.set(2);
                         atualizarTabuleiroCompleto(tabuleiro, ehPlayer1 ? botoesP1 : botoesP2);
@@ -195,7 +195,7 @@ public class Main extends Application {
                             TelaVencedor("Player 1 Venceu");
                         }
                     }
-                    else if ((jogadorAtual.get() == 2 && ehPlayer1) || GameStatus.equals("Ready")) {
+                    else if ((jogadorAtual.get() == 2 && ehPlayer1) && GameStatus.equals("Ready")) {
                         atirar(tabuleiro, L, C);
                         jogadorAtual.set(1);
                         atualizarTabuleiroCompleto(tabuleiro, ehPlayer1 ? botoesP1 : botoesP2);
@@ -203,7 +203,7 @@ public class Main extends Application {
                             TelaVencedor("Player 2 Venceu");
                         }
                     }
-                    else if ((jogadorAtual.get() == 1 && !ehPlayer1) || GameStatus.equals("Setup")) {
+                    else if ((jogadorAtual.get() == 1 && !ehPlayer1) && GameStatus.equals("Setup")) {
                         if (BarcoSelecionado == null) {
                             MensagemTela("Selecione um barco primeiro!");
                             return;
@@ -218,7 +218,7 @@ public class Main extends Application {
                             }
                         }
                     }
-                    else if ((jogadorAtual.get() == 2 && ehPlayer1) || GameStatus.equals("Setup")) {
+                    else if ((jogadorAtual.get() == 2 && ehPlayer1) && GameStatus.equals("Setup")) {
                         if (BarcoSelecionado == null) {
                             MensagemTela("Selecione um barco primeiro!");
                             return;
