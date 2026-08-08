@@ -32,16 +32,6 @@ public class Main extends Application {
 
     IntegerProperty jogadorAtual= new SimpleIntegerProperty(1);
     private Stage primaryStage;
-    String GameStatus = "Setup";
-    StringProperty Orientaçao = new SimpleStringProperty("Horizontal");
-    boolean MostrarBarcos = true;
-    Button[][] botoesP1 = new Button[10][10];
-    Button[][] botoesP2 = new Button[10][10];
-    public static Barco BarcoSelecionado = null;
-    public static boolean Player1Done = false;
-    public static boolean Player2Done = false;
-    public static Barco[] barcosPlayer1 = new Barco[5];
-    public static Barco[] barcosPlayer2 = new Barco[5];
 
 
     public int JaFoiUsado(int[][] Tabuleiro, int L, int C) {
@@ -73,8 +63,8 @@ public class Main extends Application {
         status.textProperty().bind(jogadorAtual.asString("Vez do jogador %d"));
         VBox statusBox = new VBox(20, status);
         statusBox.setStyle("-fx-alignment: center");
-        HBox barquinhosPlayer1 = criarBarquinhos(barcosPlayer1, Orientaçao);
-        HBox barquinhosPlayer2 = criarBarquinhos(barcosPlayer2, Orientaçao);
+        HBox barquinhosPlayer1 = criarBarquinhos(jogador1, gameState);
+        HBox barquinhosPlayer2 = criarBarquinhos(jogador2, gameState);
         HBox grids = new HBox(20, gridP1, gridP2);
         VBox player2 = new VBox(gridP2, barquinhosPlayer2);
         VBox player1 = new VBox(gridP1, barquinhosPlayer1);

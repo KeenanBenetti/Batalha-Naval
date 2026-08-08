@@ -82,12 +82,13 @@ public class GameController {
         return true;
     }
 
-    public static void trocarOrientaçao(StringProperty Orientaçao){
-        if (Orientaçao.get().equals("Horizontal")){
-            Orientaçao.set("Vertical");
+    public static void trocarOrientaçao(Player jogador){
+        String Orientaçao = jogador.getOrientaçãoDoPosicionamento();
+        if (Orientaçao.equals("Horizontal")){
+            jogador.setOrientaçãoDoPosicionamento("Vertical");
 
-        } else if (Orientaçao.get().equals("Vertical")) {
-            Orientaçao.set("Horizontal");
+        } else if (Orientaçao.equals("Vertical")) {
+            jogador.setOrientaçãoDoPosicionamento("Horizontal");
         }
     }
 

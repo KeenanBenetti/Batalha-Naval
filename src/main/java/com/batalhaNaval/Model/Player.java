@@ -26,11 +26,23 @@ public class Player {
         return BarcoSelecionado;
     }
 
+    public void setBarcoSelecionado(Barco barcoSelecionado) {
+        BarcoSelecionado = barcoSelecionado;
+    }
+
     public String getOrientaçãoDoPosicionamento(){
         return OrientaçãoDoPosicionamento;
     }
 
+    public void setOrientaçãoDoPosicionamento(String orientaçãoDoPosicionamento) {
+        OrientaçãoDoPosicionamento = orientaçãoDoPosicionamento;
+    }
+
     public Button[][] getTabuleiro() {
         return Tabuleiro;
+    }
+
+    public Barco[] getBarcosDoPlayer() {
+        return BarcosDoPlayer;
     }
 }

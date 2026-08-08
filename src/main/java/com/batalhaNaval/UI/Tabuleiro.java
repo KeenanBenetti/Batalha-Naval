@@ -21,12 +21,6 @@ import static com.batalhaNaval.Controller.GameController.*;
 import static com.batalhaNaval.Controller.GameController.adicionarBarco;
 import static com.batalhaNaval.Controller.GameController.checkarStatusPlayer;
 import static com.batalhaNaval.Controller.GameController.checkarEspaçoParaBarco;
-import static com.batalhaNaval.Main.Player1Done;
-import static com.batalhaNaval.Main.Player2Done;
-import static com.batalhaNaval.Main.barcosPlayer1;
-import static com.batalhaNaval.Main.barcosPlayer2;
-import static com.batalhaNaval.Main.BarcoSelecionado;
-
 
 
 public class Tabuleiro {
@@ -154,31 +148,40 @@ public class Tabuleiro {
         }
     }
 
-    public static void selecionarBarco(Barco barco) {
+    public static void selecionarBarco(Player jogador, int index ) {
+        Barco[] barcos = jogador.getBarcosDoPlayer();
+        Barco barco = barcos[index];
+
         if (barco.usado) {
             MensagemTela("Esse barco já foi usado!");
             return;
         }
-        BarcoSelecionado = barco;
+
+        jogador.setBarcoSelecionado(barco);
         MensagemTela("Selecionou: " + barco.nome);
     }
 
-    public static HBox criarBarquinhos(Barco[] barcosPlayer, StringProperty Orientaçao){
+    public static HBox criarBarquinhos(Player jogador, GameState gameState){
         HBox barquinhos = new HBox(20);
+
+        Barco[] barcosPlayer = jogador.getBarcosDoPlayer();
+
         for (int i = 0; i < barcosPlayer.length; i++) {
             GridPane barquinho = new GridPane();
             for (int j = 0; j < barcosPlayer[i].tamanho; j++) {
                 Button btn = new Button();
-                int finalI = i;//se o inteliJ disse, Não entendi mas ok
-                btn.setOnAction(e -> selecionarBarco(barcosPlayer[finalI]));
+                int FinalI = i;
+                btn.setOnAction(e -> selecionarBarco(jogador, FinalI));
                 barquinho.add(btn, i, j);
             }
             barquinhos.getChildren().add(barquinho);
         }
+
+        String Orientaçao = jogador.getOrientaçãoDoPosicionamento();
         Label lborientaçao = new Label();
         lborientaçao.textProperty().bind(Bindings.concat("Orientação Atual: ", Orientaçao));
         Button btn = new Button("Mudar Orientação");
-        btn.setOnAction(e->trocarOrientaçao(Orientaçao));
+        btn.setOnAction(e->trocarOrientaçao(jogador));
         VBox vbox = new VBox(20, btn, lborientaçao);
         barquinhos.getChildren().add(vbox);
         return barquinhos;
