@@ -2,6 +2,9 @@ package com.batalhaNaval.UI;
 
 import com.batalhaNaval.Controller.GameController;
 import com.batalhaNaval.Model.Barco;
+import com.batalhaNaval.Model.Celula;
+import com.batalhaNaval.Model.GameState;
+import com.batalhaNaval.Model.Player;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -17,6 +20,7 @@ import javafx.stage.Stage;
 import static com.batalhaNaval.Controller.GameController.*;
 import static com.batalhaNaval.Controller.GameController.adicionarBarco;
 import static com.batalhaNaval.Controller.GameController.checkarStatusPlayer;
+import static com.batalhaNaval.Controller.GameController.checkarEspaçoParaBarco;
 import static com.batalhaNaval.Main.Player1Done;
 import static com.batalhaNaval.Main.Player2Done;
 import static com.batalhaNaval.Main.barcosPlayer1;
@@ -31,14 +35,6 @@ public class Tabuleiro {
 
     public static void MensagemTela(String texto) {
         Mensagem.set(texto);
-    }
-
-    public static void IniciarTabuleiro(int[][] Tabuleiro) {
-        for (int i = 0; i < Tabuleiro.length; i++) {
-            for (int ii = 0; ii < Tabuleiro[0].length; ii++) {
-                Tabuleiro[i][ii] = 0;
-            }
-        }
     }
 
     public static void atualizarInterface(int [][] tabuleiro, Button btn){
@@ -76,70 +72,59 @@ public class Tabuleiro {
         primaryStage.setScene(cena);
     }
 
-    public static GridPane criarTabuleiro(int[][] tabuleiro, Button[][] botoes, IntegerProperty jogadorAtual, String GameStatus, Stage primaryStage, Barco BarcoSelecionado, StringProperty Orientaçao) {
-        GridPane grid = new GridPane();
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 10; j++) {
+    public static Button[][] criarTabuleiro(GameState gameState, Player jogador){
+        Button[][] tabuleiro = new Button[10][10];
+        for (int i = 0; i < 10; i++){
+            for (int j = 0; i < 10; i++){
                 Button btn = new Button();
                 btn.setPrefSize(40, 40);
                 int L = i;
                 int C = j;
-                btn.setUserData(new int[]{L, C});
 
-                botoes[i][j] = btn;
+                btn.setUserData(new Celula("Agua", L, C));
 
-                btn.setOnAction(e -> {
-                    if ((jogadorAtual.get() == 1) && GameStatus.equals("Ready")) {
-                        GameController.atirar(tabuleiro, L, C, GameStatus);
-                        jogadorAtual.set(2);
-                        atualizarTabuleiroCompleto(tabuleiro, botoes, false);
-                        if (checkarTabelaForWin(tabuleiro)) {
-                            TelaVencedor("Player 1 Venceu", primaryStage);
-                        }
-                    }
-                    else if ((jogadorAtual.get() == 2) && GameStatus.equals("Ready")) {
-                        GameController.atirar(tabuleiro, L, C, GameStatus);
-                        jogadorAtual.set(1);
-                        atualizarTabuleiroCompleto(tabuleiro, botoes, false);
-                        if (checkarTabelaForWin(tabuleiro)) {
-                            TelaVencedor("Player 2 Venceu", primaryStage);
-                        }
-                    }
-                    else if ((jogadorAtual.get() == 1) && GameStatus.equals("Setup")) {
-                        if (BarcoSelecionado == null) {
-                            MensagemTela("Selecione um barco primeiro!");
-                            return;
-                        }
-                        if (!BarcoSelecionado.usado) {
-                            if (adicionarBarco(tabuleiro, L, C, Orientaçao, BarcoSelecionado)) {
-                                Player1Done = checkarStatusPlayer(barcosPlayer1);
-                                jogadorAtual.set(2);
-                                atualizarTabuleiroCompleto(tabuleiro, botoes, true);
+
+                tabuleiro[i][j] = btn;
+
+                btn.setOnAction(e ->{
+                    if (gameState.getGameStatus().equals("setup")){
+                        if (jogador.getBarcoSelecionado().usado){
+                            MensagemTela("Esse barco já foi usado, escolha outro!");
+                        } else {
+                            if (checkarEspaçoParaBarco(L, C, jogador)){
+                                adicionarBarco(L, C, jogador);
+                                TrocarPlayer(gameState);
                             } else {
-                                MensagemTela("Tente novamente em outro lugar");
+                                MensagemTela("Tente novamente em outro lugar!");
                             }
                         }
-                    }
-                    else if ((jogadorAtual.get() == 2 ) && GameStatus.equals("Setup")) {
-                        if (BarcoSelecionado == null) {
-                            MensagemTela("Selecione um barco primeiro!");
-                            return;
-                        }
-                        if (!BarcoSelecionado.usado) {
-                            if (adicionarBarco(tabuleiro, L, C, Orientaçao, BarcoSelecionado)) {
-                                Player2Done = checkarStatusPlayer(barcosPlayer2);
-                                jogadorAtual.set(1);
-                                atualizarTabuleiroCompleto(tabuleiro, botoes, true);
+                    } else if (gameState.getGameStatus().equals("Ready")) {
+                        if(checkarTabelaParaAtirar(L, C, jogador)){
+                            if (GameController.atirar(L, C, jogador)){
+                                MensagemTela("Acertou!");
                             } else {
-                                MensagemTela("Tente novamente em outro lugar");
+                                MensagemTela("Errou!");
+                                TrocarPlayer(gameState);
                             }
+                        } else{
+                            MensagemTela("Você já atirou aqui!");
                         }
                     }
                 });
+            }
+        }
+        return tabuleiro;
+    }
+
+    public static GridPane criarGridPane(Player jogador){
+        Button[][] botoes = jogador.getTabuleiro();
+        GridPane grid = new GridPane();
+        for (int i = 0; i < 10; i++){
+            for (int j = 0; i < 10; j++){
+                Button btn = botoes[i][j];
                 grid.add(btn, j, i);
             }
         }
-        atualizarTabuleiroCompleto(tabuleiro, botoes, true);
         return grid;
     }
 

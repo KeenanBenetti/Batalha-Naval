@@ -2,6 +2,8 @@ package com.batalhaNaval;
 
 import com.batalhaNaval.Controller.GameController;
 import com.batalhaNaval.Model.Barco;
+import com.batalhaNaval.Model.GameState;
+import com.batalhaNaval.Model.Player;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
@@ -20,18 +22,10 @@ import java.util.Objects;
 
 import static com.batalhaNaval.Controller.GameController.CriarBarcos;
 import static com.batalhaNaval.Controller.GameController.adicionarBarco;
-import static com.batalhaNaval.UI.Tabuleiro.Mensagem;
-import static com.batalhaNaval.UI.Tabuleiro.MensagemTela;
 import static com.batalhaNaval.Controller.GameController.checkarStatusPlayer;
 import static com.batalhaNaval.Controller.GameController.checkarTabelaForWin;
 import static com.batalhaNaval.Controller.GameController.trocarOrientaçao;
-import static com.batalhaNaval.UI.Tabuleiro.IniciarTabuleiro;
-import static com.batalhaNaval.UI.Tabuleiro.atualizarInterface;
-import static com.batalhaNaval.UI.Tabuleiro.ReiniciarJogo;
-import static com.batalhaNaval.UI.Tabuleiro.TelaVencedor;
-import static com.batalhaNaval.UI.Tabuleiro.selecionarBarco;
-import static com.batalhaNaval.UI.Tabuleiro.criarBarquinhos;
-import static com.batalhaNaval.UI.Tabuleiro.criarTabuleiro;
+import static com.batalhaNaval.UI.Tabuleiro.*;
 
 
 public class Main extends Application {
@@ -60,30 +54,20 @@ public class Main extends Application {
         }
     }
 
-    class Valores {
-        public static final int AGUA = 0;
-        public static final int USADO = 1;
-        public static final int BARCO = 2;
-        public static final int ACERTO = 3;
-    }
+    GameState gameState = new GameState("Jogador 1", "Setup");
 
     @Override
     public void start(Stage stage) {
         this.primaryStage = stage;
-        int[][] tabuleiroPlayer1 = new int[10][10];
-        int[][] tabuleiroPlayer2 = new int[10][10];
 
-        CriarBarcos(barcosPlayer1);
-        CriarBarcos(barcosPlayer2);
-        IniciarTabuleiro(tabuleiroPlayer1);
-        IniciarTabuleiro(tabuleiroPlayer2);
+        Player jogador1 = new Player("Jogador 1", gameState);
+        Player jogador2 = new Player("Jogador 2", gameState);
 
         //layout inicial
         // duas caixas verticais uma para guardar os barcos no inicio do jogo e outra para a tabela
 
-
-        GridPane gridP1 = criarTabuleiro(tabuleiroPlayer1, true);
-        GridPane gridP2 = criarTabuleiro(tabuleiroPlayer2, false);
+        GridPane gridP1 = criarGridPane(jogador1);
+        GridPane gridP2 = criarGridPane(jogador2);
 
         Label status = new Label();
         status.textProperty().bind(jogadorAtual.asString("Vez do jogador %d"));

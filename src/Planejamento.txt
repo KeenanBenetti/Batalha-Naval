@@ -2,6 +2,8 @@ Planejamento:
 
 Separação de funções para arquivos separados para melhor desenvolvimento - feito
 
+Ajuste nos estados da minha aplicação: Modelar Player e tabuleiro como classes
+
 Ajuste na função de criar tabuleiro, já é maior que a tais carla
 
 Adição de uma classe GameStatus no lugar da string
