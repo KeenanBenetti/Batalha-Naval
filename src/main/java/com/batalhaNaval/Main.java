@@ -1,30 +1,17 @@
 package com.batalhaNaval;
 
-import com.batalhaNaval.Controller.GameController;
-import com.batalhaNaval.Model.Barco;
 import com.batalhaNaval.Model.GameState;
 import com.batalhaNaval.Model.Player;
 import javafx.application.Application;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.util.Objects;
-
-import static com.batalhaNaval.Controller.GameController.CriarBarcos;
-import static com.batalhaNaval.Controller.GameController.adicionarBarco;
-import static com.batalhaNaval.Controller.GameController.checkarStatusPlayer;
-import static com.batalhaNaval.Controller.GameController.checkarTabelaForWin;
-import static com.batalhaNaval.Controller.GameController.trocarOrientaçao;
 import static com.batalhaNaval.UI.Tabuleiro.*;
 
 

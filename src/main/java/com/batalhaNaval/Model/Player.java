@@ -9,14 +9,14 @@ public class Player {
     String Nome;
     Button[][] Tabuleiro;
     String StatusDoPlayer;
-    String OrientaçãoDoPosicionamento;
+    String OrientacaoDoPosicionamento;
     Barco[] BarcosDoPlayer;
     Barco BarcoSelecionado;
 
     public Player(String nome, GameState gameState) {
         this.Nome = nome;
         this.StatusDoPlayer = "Setup";
-        this.OrientaçãoDoPosicionamento = "Vertical";
+        this.OrientacaoDoPosicionamento = "Vertical";
         this.BarcosDoPlayer = GameController.CriarBarcos();
         this.BarcoSelecionado = BarcosDoPlayer[0];
         this.Tabuleiro = criarTabuleiro(gameState, this);
@@ -30,12 +30,12 @@ public class Player {
         BarcoSelecionado = barcoSelecionado;
     }
 
-    public String getOrientaçãoDoPosicionamento(){
-        return OrientaçãoDoPosicionamento;
+    public String getOrientacaoDoPosicionamento(){
+        return OrientacaoDoPosicionamento;
     }
 
     public void setOrientaçãoDoPosicionamento(String orientaçãoDoPosicionamento) {
-        OrientaçãoDoPosicionamento = orientaçãoDoPosicionamento;
+        OrientacaoDoPosicionamento = orientaçãoDoPosicionamento;
     }
 
     public Button[][] getTabuleiro() {
@@ -44,5 +44,9 @@ public class Player {
 
     public Barco[] getBarcosDoPlayer() {
         return BarcosDoPlayer;
+    }
+
+    public String getNome() {
+        return Nome;
     }
 }

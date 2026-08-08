@@ -1,20 +1,17 @@
 package com.batalhaNaval.Controller;
 
 import com.batalhaNaval.Model.GameState;
-import javafx.beans.property.StringProperty;
 import com.batalhaNaval.Model.Barco;
 import com.batalhaNaval.Model.Player;
 import com.batalhaNaval.Model.Celula;
 import javafx.scene.control.Button;
-
-import static com.batalhaNaval.UI.Tabuleiro.MensagemTela;
 
 public class GameController {
 
     public static void adicionarBarco(int L, int C, Player jogador){
         Button[][] botoes = jogador.getTabuleiro();
         Barco barco = jogador.getBarcoSelecionado();
-        String orientaçao = jogador.getOrientaçãoDoPosicionamento();
+        String orientaçao = jogador.getOrientacaoDoPosicionamento();
         if (orientaçao.equals("Vertical")) {
             for (int i = C; i <= barco.tamanho; i++) {
                 Celula celula = (Celula) botoes[L][i].getUserData();
@@ -28,16 +25,15 @@ public class GameController {
         }
     }
 
-    public static boolean atirar(int L, int C, Player jogador) {
+    public static boolean atirar(int L, int C, Player jogador, GameState gameState) {
         Button[][] botoes = jogador.getTabuleiro();
-        Button btn = botoes[L][C];
-        Celula celula = (Celula) btn.getUserData();
-
-        if (celula.status.equals("agua")){
-            return false;
-        } else {
+        Celula celula = (Celula) botoes[L][C].getUserData();
+        if (celula.status.equals("Barco")){
+            celula.status = "Acerto";
+            checkarTabelaForWin(jogador, gameState);
             return true;
         }
+        return false;
     }
 
     public static Barco[] CriarBarcos() {
@@ -62,28 +58,31 @@ public class GameController {
 
     public static boolean checkarTabelaParaAtirar(int L, int C, Player jogador){
         Button[][] tabuleiro = jogador.getTabuleiro();
-        Button btn = tabuleiro[L][C];
         Celula celula = (Celula) tabuleiro[L][C].getUserData();
-
-        if (!celula.status.equals("Missed")){
-            return false;
+        if (celula.status.equals("water")||celula.status.equals("Barco")){
+            return true;
         }
-        return true;
+        return false;
     }
 
-    public static boolean checkarTabelaForWin(int[][] tabela) {
+    public static void checkarTabelaForWin(Player jogador, GameState gameState) {
+        Button[][] tabela = jogador.getTabuleiro();
+
         for (int i = 0; i < tabela.length; i++) {
             for (int j = 0; j < tabela[0].length; j++) {
-                if (tabela[i][j] == 2) {
-                    return false;
+                Celula celula = (Celula) tabela[i][j].getUserData();
+
+                if (celula.status.equals("Barco") ) {
+                    return;
                 }
             }
         }
-        return true;
+        gameState.setGameStatus("Finalizado");
+        gameState.setVencedor(jogador.getNome());
     }
 
-    public static void trocarOrientaçao(Player jogador){
-        String Orientaçao = jogador.getOrientaçãoDoPosicionamento();
+    public static void trocarOrientacao(Player jogador){
+        String Orientaçao = jogador.getOrientacaoDoPosicionamento();
         if (Orientaçao.equals("Horizontal")){
             jogador.setOrientaçãoDoPosicionamento("Vertical");
 
@@ -94,7 +93,7 @@ public class GameController {
 
     public static boolean checkarEspaçoParaBarco(int L, int C, Player jogador){
         int tamanho = jogador.getBarcoSelecionado().tamanho;
-        String Orientação = jogador.getOrientaçãoDoPosicionamento();
+        String Orientação = jogador.getOrientacaoDoPosicionamento();
         Button[][] tabuleiro = jogador.getTabuleiro();
 
         if (Orientação.equals("Vertical") && L + tamanho <=10){

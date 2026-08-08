@@ -6,7 +6,6 @@ import com.batalhaNaval.Model.Celula;
 import com.batalhaNaval.Model.GameState;
 import com.batalhaNaval.Model.Player;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.Scene;
@@ -19,7 +18,6 @@ import javafx.stage.Stage;
 
 import static com.batalhaNaval.Controller.GameController.*;
 import static com.batalhaNaval.Controller.GameController.adicionarBarco;
-import static com.batalhaNaval.Controller.GameController.checkarStatusPlayer;
 import static com.batalhaNaval.Controller.GameController.checkarEspaçoParaBarco;
 
 
@@ -94,7 +92,7 @@ public class Tabuleiro {
                         }
                     } else if (gameState.getGameStatus().equals("Ready")) {
                         if(checkarTabelaParaAtirar(L, C, jogador)){
-                            if (GameController.atirar(L, C, jogador)){
+                            if (GameController.atirar(L, C, jogador, gameState)){
                                 MensagemTela("Acertou!");
                             } else {
                                 MensagemTela("Errou!");
@@ -177,11 +175,11 @@ public class Tabuleiro {
             barquinhos.getChildren().add(barquinho);
         }
 
-        String Orientaçao = jogador.getOrientaçãoDoPosicionamento();
+        String Orientaçao = jogador.getOrientacaoDoPosicionamento();
         Label lborientaçao = new Label();
         lborientaçao.textProperty().bind(Bindings.concat("Orientação Atual: ", Orientaçao));
         Button btn = new Button("Mudar Orientação");
-        btn.setOnAction(e->trocarOrientaçao(jogador));
+        btn.setOnAction(e-> trocarOrientacao(jogador));
         VBox vbox = new VBox(20, btn, lborientaçao);
         barquinhos.getChildren().add(vbox);
         return barquinhos;
