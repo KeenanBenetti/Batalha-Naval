@@ -1,0 +1,202 @@
+package com.batalhaNaval.UI;
+
+import com.batalhaNaval.Controller.GameController;
+import com.batalhaNaval.Model.Barco;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
+import static com.batalhaNaval.Controller.GameController.*;
+import static com.batalhaNaval.Controller.GameController.adicionarBarco;
+import static com.batalhaNaval.Controller.GameController.checkarStatusPlayer;
+import static com.batalhaNaval.Main.Player1Done;
+import static com.batalhaNaval.Main.Player2Done;
+import static com.batalhaNaval.Main.barcosPlayer1;
+import static com.batalhaNaval.Main.barcosPlayer2;
+import static com.batalhaNaval.Main.BarcoSelecionado;
+
+
+
+public class Tabuleiro {
+
+    public static StringProperty Mensagem = new SimpleStringProperty();
+
+    public static void MensagemTela(String texto) {
+        Mensagem.set(texto);
+    }
+
+    public static void IniciarTabuleiro(int[][] Tabuleiro) {
+        for (int i = 0; i < Tabuleiro.length; i++) {
+            for (int ii = 0; ii < Tabuleiro[0].length; ii++) {
+                Tabuleiro[i][ii] = 0;
+            }
+        }
+    }
+
+    public static void atualizarInterface(int [][] tabuleiro, Button btn){
+        //atualiza o local atirado
+        int [] posicao = (int[]) btn.getUserData();
+        int L = posicao[0];
+        int C = posicao[1];
+        if (tabuleiro[L][C] == 0 || tabuleiro[L][C] == 2){
+            btn.setStyle("-fx-background-color: lightblue;");
+        } else if (tabuleiro[L][C] == 1) {
+            btn.setStyle("-fx-background-color: lightgray;");
+        } else if (tabuleiro[L][C] == 3){
+            btn.setStyle("-fx-background-color: #ff5d5d");
+        }
+
+    }
+
+    public static void ReiniciarJogo(){
+        //futuramente irá reiniciar o jogo inteiro
+    }
+
+    public static void TelaVencedor(String texto, Stage primaryStage) {
+        Label aviso = new Label(texto);
+        aviso.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
+        Button reiniciar = new Button("Reiniciar");
+        reiniciar.setOnAction(e -> {
+            primaryStage.close();
+            ReiniciarJogo();
+        });
+        Button fechar = new Button("Fechar Jogo");
+        fechar.setOnAction(e -> System.exit(0));
+        HBox botoes = new HBox(20, reiniciar, fechar);
+        VBox root = new VBox(20, aviso, botoes);
+        Scene cena = new Scene(root, 400, 200);
+        primaryStage.setScene(cena);
+    }
+
+    public static GridPane criarTabuleiro(int[][] tabuleiro, Button[][] botoes, IntegerProperty jogadorAtual, String GameStatus, Stage primaryStage, Barco BarcoSelecionado, StringProperty Orientaçao) {
+        GridPane grid = new GridPane();
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                Button btn = new Button();
+                btn.setPrefSize(40, 40);
+                int L = i;
+                int C = j;
+                btn.setUserData(new int[]{L, C});
+
+                botoes[i][j] = btn;
+
+                btn.setOnAction(e -> {
+                    if ((jogadorAtual.get() == 1) && GameStatus.equals("Ready")) {
+                        GameController.atirar(tabuleiro, L, C, GameStatus);
+                        jogadorAtual.set(2);
+                        atualizarTabuleiroCompleto(tabuleiro, botoes, false);
+                        if (checkarTabelaForWin(tabuleiro)) {
+                            TelaVencedor("Player 1 Venceu", primaryStage);
+                        }
+                    }
+                    else if ((jogadorAtual.get() == 2) && GameStatus.equals("Ready")) {
+                        GameController.atirar(tabuleiro, L, C, GameStatus);
+                        jogadorAtual.set(1);
+                        atualizarTabuleiroCompleto(tabuleiro, botoes, false);
+                        if (checkarTabelaForWin(tabuleiro)) {
+                            TelaVencedor("Player 2 Venceu", primaryStage);
+                        }
+                    }
+                    else if ((jogadorAtual.get() == 1) && GameStatus.equals("Setup")) {
+                        if (BarcoSelecionado == null) {
+                            MensagemTela("Selecione um barco primeiro!");
+                            return;
+                        }
+                        if (!BarcoSelecionado.usado) {
+                            if (adicionarBarco(tabuleiro, L, C, Orientaçao, BarcoSelecionado)) {
+                                Player1Done = checkarStatusPlayer(barcosPlayer1);
+                                jogadorAtual.set(2);
+                                atualizarTabuleiroCompleto(tabuleiro, botoes, true);
+                            } else {
+                                MensagemTela("Tente novamente em outro lugar");
+                            }
+                        }
+                    }
+                    else if ((jogadorAtual.get() == 2 ) && GameStatus.equals("Setup")) {
+                        if (BarcoSelecionado == null) {
+                            MensagemTela("Selecione um barco primeiro!");
+                            return;
+                        }
+                        if (!BarcoSelecionado.usado) {
+                            if (adicionarBarco(tabuleiro, L, C, Orientaçao, BarcoSelecionado)) {
+                                Player2Done = checkarStatusPlayer(barcosPlayer2);
+                                jogadorAtual.set(1);
+                                atualizarTabuleiroCompleto(tabuleiro, botoes, true);
+                            } else {
+                                MensagemTela("Tente novamente em outro lugar");
+                            }
+                        }
+                    }
+                });
+                grid.add(btn, j, i);
+            }
+        }
+        atualizarTabuleiroCompleto(tabuleiro, botoes, true);
+        return grid;
+    }
+
+    public static void atualizarTabuleiroCompleto(int[][] tabuleiro, Button[][] botoes, boolean MostrarBarcos) {
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+
+                Button btn = botoes[i][j];
+
+                if (tabuleiro[i][j] == 0) {
+                    btn.setStyle("-fx-background-color: lightblue;"); // água
+                }
+                else if (tabuleiro[i][j] == 2) {
+                    if (MostrarBarcos) {
+                        btn.setStyle("-fx-background-color: green;"); // barco visível (debug)
+                    } else {
+                        btn.setStyle("-fx-background-color: lightblue;");
+                    }
+                }
+                else if (tabuleiro[i][j] == 1) {
+                    btn.setStyle("-fx-background-color: lightgray;");
+                }
+                else if (tabuleiro[i][j] == 3) {
+                    btn.setStyle("-fx-background-color: red;");
+                }
+            }
+        }
+    }
+
+    public static void selecionarBarco(Barco barco) {
+        if (barco.usado) {
+            MensagemTela("Esse barco já foi usado!");
+            return;
+        }
+        BarcoSelecionado = barco;
+        MensagemTela("Selecionou: " + barco.nome);
+    }
+
+    public static HBox criarBarquinhos(Barco[] barcosPlayer, StringProperty Orientaçao){
+        HBox barquinhos = new HBox(20);
+        for (int i = 0; i < barcosPlayer.length; i++) {
+            GridPane barquinho = new GridPane();
+            for (int j = 0; j < barcosPlayer[i].tamanho; j++) {
+                Button btn = new Button();
+                int finalI = i;//se o inteliJ disse, Não entendi mas ok
+                btn.setOnAction(e -> selecionarBarco(barcosPlayer[finalI]));
+                barquinho.add(btn, i, j);
+            }
+            barquinhos.getChildren().add(barquinho);
+        }
+        Label lborientaçao = new Label();
+        lborientaçao.textProperty().bind(Bindings.concat("Orientação Atual: ", Orientaçao));
+        Button btn = new Button("Mudar Orientação");
+        btn.setOnAction(e->trocarOrientaçao(Orientaçao));
+        VBox vbox = new VBox(20, btn, lborientaçao);
+        barquinhos.getChildren().add(vbox);
+        return barquinhos;
+    }
+
+}

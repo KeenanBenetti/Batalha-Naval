@@ -1,6 +1,10 @@
 Planejamento:
 
-Separação de funções para arquivos separados para melhor desenvolvimento
+Separação de funções para arquivos separados para melhor desenvolvimento - feito
+
+Ajuste na função de criar tabuleiro, já é maior que a tais carla
+
+Adição de uma classe GameStatus no lugar da string
 
 Refatoração da janela do game para duas instancias separadas rodando de forma concorrente
 O objetivo disso é que cada um tenha sua tela e facilite a melhoria posterior de multiplayer
@@ -14,6 +18,8 @@ Adição do modo singleplayer vs maquina, implementar 3 diferentes niveis de est
 Adição do modo multiplayer LAN
 
 Melhoria do modo multiplayer usando um servidor Render para multiplayer na internet
+
+verificar boas praticas de public vs private
 
 Melhoria do visual do game criar 8bit de cada parte de todos os 5 barcos
 Posicionar o 8bit correto para cada parte do barco na orientação correta
