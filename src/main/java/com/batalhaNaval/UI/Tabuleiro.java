@@ -67,7 +67,7 @@ public class Tabuleiro {
     public static Button[][] criarTabuleiro(GameState gameState, Player jogador){
         Button[][] tabuleiro = new Button[10][10];
         for (int i = 0; i < 10; i++){
-            for (int j = 0; i < 10; i++){
+            for (int j = 0; j < 10; j++){
                 Button btn = new Button();
                 btn.setPrefSize(40, 40);
                 int L = i;
@@ -112,7 +112,7 @@ public class Tabuleiro {
         Button[][] botoes = jogador.getTabuleiro();
         GridPane grid = new GridPane();
         for (int i = 0; i < 10; i++){
-            for (int j = 0; i < 10; j++){
+            for (int j = 0; j < 10; j++){
                 Button btn = botoes[i][j];
                 grid.add(btn, j, i);
             }
