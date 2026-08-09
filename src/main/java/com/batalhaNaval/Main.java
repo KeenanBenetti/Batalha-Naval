@@ -17,11 +17,9 @@ import static com.batalhaNaval.UI.Tabuleiro.*;
 
 public class Main extends Application {
 
-    private Stage primaryStage;
-
     @Override
-    public void start(Stage stage) {
-        this.primaryStage = stage;
+    public void start(Stage primaryStage) {
+        Stage secundaryStage = new Stage();
 
         GameState gameState = new GameState("Jogador 1",  "Jogador 1", "Jogador 2", "Setup");
 
@@ -34,28 +32,44 @@ public class Main extends Application {
         GridPane gridP1 = criarGridPane(jogador1);
         GridPane gridP2 = criarGridPane(jogador2);
 
-        Label status = new Label();
-        Label topGameState = new Label();
-        status.textProperty().bind(gameState.getVezDe());
-        topGameState.textProperty().bind(gameState.getGameStatus());
-        HBox topBar = new HBox(20, status, topGameState);
-        VBox statusBox = new VBox(20, topBar);
-        statusBox.setStyle("-fx-alignment: center");
+        Label status1 = new Label();
+        Label status2 = new Label();
+        Label topGameState1 = new Label();
+        Label topGameState2 = new Label();
+        status1.textProperty().bind(gameState.getVezDe());
+        status2.textProperty().bind(gameState.getVezDe());
+        topGameState1.textProperty().bind(gameState.getGameStatus());
+        topGameState2.textProperty().bind(gameState.getGameStatus());
+        HBox topBar1 = new HBox(20, status1, topGameState1);
+        HBox topBar2 = new HBox(20, status2, topGameState2);
+        VBox statusBox1 = new VBox(20, topBar1);
+        VBox statusBox2 = new VBox(20, topBar2);
+        statusBox1.setStyle("-fx-alignment: center");
+        statusBox2.setStyle("-fx-alignment: center");
         HBox barquinhosPlayer1 = criarBarquinhos(jogador1, gameState);
         HBox barquinhosPlayer2 = criarBarquinhos(jogador2, gameState);
-        HBox grids = new HBox(20, gridP1, gridP2);
+        //HBox grids = new HBox(20, gridP1, gridP2);
         VBox player2 = new VBox(gridP2, barquinhosPlayer2);
         VBox player1 = new VBox(gridP1, barquinhosPlayer1);
-        HBox colunas = new HBox(40, player1, player2);
-        Label mensagem = new Label();
-        mensagem.textProperty().bind(Mensagem);
-        VBox Caixamensagem = new VBox(20, mensagem);
-        Caixamensagem.setStyle("-fx-alignment: center");
-        VBox root = new VBox(20, statusBox, colunas, Caixamensagem);
-        Scene tela = new Scene(root, 800, 600);
-        stage.setScene(tela);
-        stage.setTitle("Batalha Naval");
-        stage.show();
+        //HBox colunas = new HBox(40, player1, player2);
+        Label mensagem1 = new Label();
+        Label mensagem2 = new Label();
+        mensagem1.textProperty().bind(Mensagem);
+        mensagem2.textProperty().bind(Mensagem);
+        VBox Caixamensagem1 = new VBox(20, mensagem1);
+        VBox Caixamensagem2 = new VBox(20, mensagem2);
+        Caixamensagem1.setStyle("-fx-alignment: center");
+        Caixamensagem2.setStyle("-fx-alignment: center");
+        VBox root1 = new VBox(20, statusBox1, player1, Caixamensagem1);
+        VBox root2 = new VBox(20, statusBox2, player2, Caixamensagem2);
+        Scene telaPlayer1 = new Scene(root1, 800, 600);
+        Scene telaPlayer2 = new Scene(root2, 800, 600);
+        primaryStage.setScene(telaPlayer1);
+        secundaryStage.setScene(telaPlayer2);
+        primaryStage.setTitle("Player 1");
+        secundaryStage.setTitle("Player 2");
+        primaryStage.show();
+        secundaryStage.show();
     }
 
     public static void main(String[] args) {
