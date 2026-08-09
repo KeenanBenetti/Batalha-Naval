@@ -124,11 +124,14 @@ public class GameController {
     }
 
     public static void TrocarPlayer(GameState gameState){
-        String jogadorAtual = gameState.getVezDe();
-        if (jogadorAtual.equals("Jogador 1")){
-            gameState.setVezDe("Jogador 2");
+        String JogadorAtual = gameState.getVezDe().get();
+        String Jogador1 = gameState.getJogador1Nome();
+        String Jogador2 = gameState.getJogador2Nome();
+
+        if (JogadorAtual.equals(Jogador1)){
+            gameState.setVezDe(Jogador2);
         } else {
-            gameState.setVezDe("Jogador 1");
+            gameState.setVezDe(Jogador1);
         }
     }
 }

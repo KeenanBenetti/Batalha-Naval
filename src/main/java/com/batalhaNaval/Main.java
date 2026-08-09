@@ -20,11 +20,11 @@ public class Main extends Application {
     IntegerProperty jogadorAtual= new SimpleIntegerProperty(1);
     private Stage primaryStage;
 
-    GameState gameState = new GameState("Jogador 1", "Setup");
-
     @Override
     public void start(Stage stage) {
         this.primaryStage = stage;
+
+        GameState gameState = new GameState("Jogador 1",  "Jogador 1", "Jogador 2", "Setup");
 
         Player jogador1 = new Player("Jogador 1", gameState);
         Player jogador2 = new Player("Jogador 2", gameState);
@@ -36,7 +36,7 @@ public class Main extends Application {
         GridPane gridP2 = criarGridPane(jogador2);
 
         Label status = new Label();
-        status.textProperty().bind(jogadorAtual.asString("Vez do jogador %d"));
+        status.textProperty().bind(gameState.getVezDe());
         VBox statusBox = new VBox(20, status);
         statusBox.setStyle("-fx-alignment: center");
         HBox barquinhosPlayer1 = criarBarquinhos(jogador1, gameState);

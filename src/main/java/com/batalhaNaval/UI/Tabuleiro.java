@@ -79,6 +79,10 @@ public class Tabuleiro {
                 tabuleiro[i][j] = btn;
 
                 btn.setOnAction(e ->{
+                    if (!gameState.getVezDe().get().equals(jogador.getNome())){
+                        MensagemTela("Não é sua vez, aguarde!");
+                        return;
+                    }
                     if (gameState.getGameStatus().equals("Setup")){
                         if (jogador.getBarcoSelecionado().usado){
                             MensagemTela("Esse barco já foi usado, escolha outro!");
