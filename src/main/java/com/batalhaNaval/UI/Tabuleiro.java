@@ -79,7 +79,7 @@ public class Tabuleiro {
                 tabuleiro[i][j] = btn;
 
                 btn.setOnAction(e ->{
-                    if (gameState.getGameStatus().equals("setup")){
+                    if (gameState.getGameStatus().equals("Setup")){
                         if (jogador.getBarcoSelecionado().usado){
                             MensagemTela("Esse barco já foi usado, escolha outro!");
                         } else {
@@ -175,9 +175,8 @@ public class Tabuleiro {
             barquinhos.getChildren().add(barquinho);
         }
 
-        String Orientaçao = jogador.getOrientacaoDoPosicionamento();
         Label lborientaçao = new Label();
-        lborientaçao.textProperty().bind(Bindings.concat("Orientação Atual: ", Orientaçao));
+        lborientaçao.textProperty().bind(Bindings.concat("Orientação Atual: ", jogador.getOrientacaoDoPosicionamento()));
         Button btn = new Button("Mudar Orientação");
         btn.setOnAction(e-> trocarOrientacao(jogador));
         VBox vbox = new VBox(20, btn, lborientaçao);

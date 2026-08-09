@@ -4,6 +4,7 @@ import com.batalhaNaval.Model.GameState;
 import com.batalhaNaval.Model.Barco;
 import com.batalhaNaval.Model.Player;
 import com.batalhaNaval.Model.Celula;
+import javafx.beans.property.StringProperty;
 import javafx.scene.control.Button;
 
 public class GameController {
@@ -11,16 +12,20 @@ public class GameController {
     public static void adicionarBarco(int L, int C, Player jogador){
         Button[][] botoes = jogador.getTabuleiro();
         Barco barco = jogador.getBarcoSelecionado();
-        String orientaçao = jogador.getOrientacaoDoPosicionamento();
-        if (orientaçao.equals("Vertical")) {
-            for (int i = C; i <= barco.tamanho; i++) {
-                Celula celula = (Celula) botoes[L][i].getUserData();
-                celula.status = "barco";
-            }
-        } else if (orientaçao.equals("Horizontal")){
-            for (int i = L; i <= barco.tamanho; i++){
+        StringProperty orientaçao = jogador.getOrientacaoDoPosicionamento();
+        if (orientaçao.get().equals("Vertical")) {
+            for (int i = L; i < L + barco.tamanho; i++) {
                 Celula celula = (Celula) botoes[i][C].getUserData();
-                celula.status = "barco";
+                celula.status = "Barco";
+                botoes[i][C].setStyle("-fx-background-color:red;");
+                barco.usado = true;
+            }
+        } else if (orientaçao.get().equals("Horizontal")){
+            for (int i = C; i < C + barco.tamanho; i++){
+                Celula celula = (Celula) botoes[L][i].getUserData();
+                celula.status = "Barco";
+                botoes[L][i].setStyle("-fx-background-color:red;");
+                barco.usado = true;
             }
         }
     }
@@ -59,7 +64,7 @@ public class GameController {
     public static boolean checkarTabelaParaAtirar(int L, int C, Player jogador){
         Button[][] tabuleiro = jogador.getTabuleiro();
         Celula celula = (Celula) tabuleiro[L][C].getUserData();
-        if (celula.status.equals("water")||celula.status.equals("Barco")){
+        if (celula.status.equals("Agua")||celula.status.equals("Barco")){
             return true;
         }
         return false;
@@ -82,32 +87,32 @@ public class GameController {
     }
 
     public static void trocarOrientacao(Player jogador){
-        String Orientaçao = jogador.getOrientacaoDoPosicionamento();
-        if (Orientaçao.equals("Horizontal")){
+        StringProperty Orientaçao = jogador.getOrientacaoDoPosicionamento();
+        if (Orientaçao.get().equals("Horizontal")){
             jogador.setOrientaçãoDoPosicionamento("Vertical");
 
-        } else if (Orientaçao.equals("Vertical")) {
+        } else if (Orientaçao.get().equals("Vertical")) {
             jogador.setOrientaçãoDoPosicionamento("Horizontal");
         }
     }
 
     public static boolean checkarEspaçoParaBarco(int L, int C, Player jogador){
         int tamanho = jogador.getBarcoSelecionado().tamanho;
-        String Orientação = jogador.getOrientacaoDoPosicionamento();
+        StringProperty Orientação = jogador.getOrientacaoDoPosicionamento();
         Button[][] tabuleiro = jogador.getTabuleiro();
 
-        if (Orientação.equals("Vertical") && L + tamanho <=10){
-            for (int i = C; i<= tamanho; i++){
-                Celula celula = (Celula) tabuleiro[L][i].getUserData();
+        if (Orientação.get().equals("Vertical") && L + tamanho <=10){
+            for (int i = L; i < L + tamanho; i++){
+                Celula celula = (Celula) tabuleiro[i][C].getUserData();
 
                 if (!celula.status.equals("Agua") ){
                     return false;
                 }
             }
             return true;
-        } else if (Orientação.equals("Horizontal") && L + tamanho <=10) {
-            for (int i = L; i <= tamanho; i++){
-                Celula celula = (Celula) tabuleiro[i][C].getUserData();
+        } else if (Orientação.get().equals("Horizontal") && C + tamanho <=10) {
+            for (int i = C; i < C + tamanho; i++){
+                Celula celula = (Celula) tabuleiro[L][i].getUserData();
 
                 if (!celula.status.equals("Agua") ){
                     return false;
@@ -120,7 +125,7 @@ public class GameController {
 
     public static void TrocarPlayer(GameState gameState){
         String jogadorAtual = gameState.getVezDe();
-        if (jogadorAtual.equals("Player 1")){
+        if (jogadorAtual.equals("Jogador 1")){
             gameState.setVezDe("Jogador 2");
         } else {
             gameState.setVezDe("Jogador 1");

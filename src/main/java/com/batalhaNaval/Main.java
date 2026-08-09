@@ -20,17 +20,6 @@ public class Main extends Application {
     IntegerProperty jogadorAtual= new SimpleIntegerProperty(1);
     private Stage primaryStage;
 
-
-    public int JaFoiUsado(int[][] Tabuleiro, int L, int C) {
-        //verifica se o local já foi acertado antes
-        if (Tabuleiro[L][C] == 1 || Tabuleiro[L][C] == 3) {
-            MensagemTela("Já Atirou Aí!");
-            return 1;
-        } else {
-            return 0;
-        }
-    }
-
     GameState gameState = new GameState("Jogador 1", "Setup");
 
     @Override
