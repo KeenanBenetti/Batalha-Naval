@@ -2,6 +2,12 @@ Planejamento:
 
 Melhoria do visual do game usando pré-visualização dos barcos com hover - feito
 
+ajuste na pagina de vencedor
+
+adição de funçao de reiniciar
+
+separar mensagem para cada player
+
 Menu para seleção de modo de jogo single-player vs multiplayer
 
 Adição do modo singleplayer vs maquina, implementar 3 diferentes niveis de estrategias para o bot
