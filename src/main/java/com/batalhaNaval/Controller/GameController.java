@@ -4,7 +4,9 @@ import com.batalhaNaval.Model.*;
 import com.batalhaNaval.UI.Tabuleiro;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.Button;
+import javafx.stage.Stage;
 
+import static com.batalhaNaval.UI.Tabuleiro.TelaVencedor;
 import static com.batalhaNaval.UI.Tabuleiro.mudarCorCelula;
 
 public class GameController {
@@ -224,4 +226,16 @@ public class GameController {
         }
     }
 
+    public static void ListenerVencedor(GameState gameState, Stage telaJogador1, Stage telaJogador2){
+        StringProperty vencedor = gameState.getVencedor();
+        String player1Nome = gameState.getJogador1Nome();
+        String player2Nome = gameState.getJogador2Nome();
+
+        vencedor.addListener(observable -> {
+            String v = vencedor.get();
+            if (v.equals(player1Nome)||v.equals(player2Nome)){
+                TelaVencedor(v, telaJogador1, telaJogador2);
+            }
+        });
+    }
 }

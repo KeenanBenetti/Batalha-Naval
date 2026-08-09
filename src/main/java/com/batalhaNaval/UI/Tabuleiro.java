@@ -44,22 +44,32 @@ public class Tabuleiro {
         //futuramente irá reiniciar o jogo inteiro
     }
 
-//    public static void TelaVencedor(String texto, Stage primaryStage) {
-//    public static void TelaVencedor(String texto, Stage primaryStage) {
-//        Label aviso = new Label(texto);
-//        aviso.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
-//        Button reiniciar = new Button("Reiniciar");
-//        reiniciar.setOnAction(e -> {
-//            primaryStage.close();
-//            ReiniciarJogo();
-//        });
-//        Button fechar = new Button("Fechar Jogo");
-//        fechar.setOnAction(e -> System.exit(0));
-//        HBox botoes = new HBox(20, reiniciar, fechar);
-//        VBox root = new VBox(20, aviso, botoes);
-//        Scene cena = new Scene(root, 400, 200);
-//        primaryStage.setScene(cena);
-//    }
+    public static void TelaVencedor(String vencedor, Stage telaJogador1, Stage telaJogador2) {
+        Label aviso1 = new Label("O vencedor é " + vencedor + "!");
+        Label aviso2 = new Label("O vencedor é " + vencedor + "!");
+        aviso1.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
+        aviso2.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
+        Button reiniciar1 = new Button("Reiniciar");
+        Button reiniciar2 = new Button("Reiniciar");
+        reiniciar1.setOnAction(e -> {
+            ReiniciarJogo();
+        });
+        reiniciar2.setOnAction(e -> {
+            ReiniciarJogo();
+        });
+        Button fechar1 = new Button("Fechar Jogo");
+        Button fechar2 = new Button("Fechar Jogo");
+        fechar1.setOnAction(e -> System.exit(0));
+        fechar2.setOnAction(e -> System.exit(0));
+        HBox botoes1 = new HBox(20, reiniciar1, fechar1);
+        HBox botoes2 = new HBox(20, reiniciar2, fechar2);
+        VBox root1 = new VBox(20, aviso1, botoes1);
+        VBox root2 = new VBox(20, aviso2, botoes2);
+        Scene cena1 = new Scene(root1, 400, 200);
+        Scene cena2 = new Scene(root2, 400, 200);
+        telaJogador1.setScene(cena1);
+        telaJogador2.setScene(cena2);
+    }
 
     public static Button[][] criarTabuleiro(GameState gameState, Player jogador){
         Button[][] tabuleiro = new Button[10][10];
@@ -174,32 +184,6 @@ public class Tabuleiro {
         }
         return grid;
     }
-
-//    public static void atualizarTabuleiroCompleto(int[][] tabuleiro, Button[][] botoes, boolean MostrarBarcos) {
-//        for (int i = 0; i < 10; i++) {
-//            for (int j = 0; j < 10; j++) {
-//
-//                Button btn = botoes[i][j];
-//
-//                if (tabuleiro[i][j] == 0) {
-//                    btn.setStyle("-fx-background-color: lightblue;"); // água
-//                }
-//                else if (tabuleiro[i][j] == 2) {
-//                    if (MostrarBarcos) {
-//                        btn.setStyle("-fx-background-color: green;"); // barco visível (debug)
-//                    } else {
-//                        btn.setStyle("-fx-background-color: lightblue;");
-//                    }
-//                }
-//                else if (tabuleiro[i][j] == 1) {
-//                    btn.setStyle("-fx-background-color: lightgray;");
-//                }
-//                else if (tabuleiro[i][j] == 3) {
-//                    btn.setStyle("-fx-background-color: red;");
-//                }
-//            }
-//        }
-//    }
 
     public static void selecionarBarco(Player jogador, int index ) {
         Barco[] barcos = jogador.getBarcosDoPlayer();

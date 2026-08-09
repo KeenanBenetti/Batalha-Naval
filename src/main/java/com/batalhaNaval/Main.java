@@ -13,6 +13,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import static com.batalhaNaval.Controller.GameController.AddListenerCores;
+import static com.batalhaNaval.Controller.GameController.ListenerVencedor;
 import static com.batalhaNaval.UI.Tabuleiro.*;
 
 
@@ -76,10 +77,12 @@ public class Main extends Application {
         Scene telaPlayer2 = new Scene(root2, 800, 600);
         primaryStage.setScene(telaPlayer1);
         secundaryStage.setScene(telaPlayer2);
-        primaryStage.setTitle("Player 1");
-        secundaryStage.setTitle("Player 2");
+        primaryStage.setTitle(gameState.getJogador1Nome());
+        secundaryStage.setTitle(gameState.getJogador2Nome());
         primaryStage.show();
         secundaryStage.show();
+
+        ListenerVencedor(gameState, primaryStage, secundaryStage);
     }
 
     public static void main(String[] args) {
