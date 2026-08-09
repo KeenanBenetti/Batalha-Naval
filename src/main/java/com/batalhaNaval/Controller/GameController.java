@@ -40,17 +40,6 @@ public class GameController {
         }
     }
 
-    public static boolean atirar(int L, int C, Player jogador, GameState gameState) {
-        Button[][] botoes = jogador.getTabuleiro();
-        Celula celula = (Celula) botoes[L][C].getUserData();
-        if (celula.status.get().equals("Barco")){
-            celula.status.set("Acerto");
-            checkarTabelaForWin(jogador, gameState);
-            return true;
-        }
-        return false;
-    }
-
     public static Barco[] CriarBarcos() {
         Barco[] barcos = new Barco[5];
         barcos[0] = new Barco("Porta-aviões", 5);
@@ -76,22 +65,6 @@ public class GameController {
         Button[][] tabuleiro = jogador.getTabuleiroOponente();
         Celula celula = (Celula) tabuleiro[L][C].getUserData();
         return celula.status.get().equals("Agua");
-    }
-
-    public static void checkarTabelaForWin(Player jogador, GameState gameState) {
-        Button[][] tabela = jogador.getTabuleiro();
-
-        for (int i = 0; i < tabela.length; i++) {
-            for (int j = 0; j < tabela[0].length; j++) {
-                Celula celula = (Celula) tabela[i][j].getUserData();
-
-                if (celula.status.get().equals("Barco") ) {
-                    return;
-                }
-            }
-        }
-        gameState.setGameStatus("Finalizado");
-        gameState.setVencedor(jogador.getNome());
     }
 
     public static void trocarOrientacao(Player jogador){
@@ -147,15 +120,19 @@ public class GameController {
         }
     }
 
-    public static String AtirarNoOponente(int L, int C, Player jogador, Player oponente){
+    public static String AtirarNoOponente(int L, int C, Player jogador, Player oponente, GameState gameState){
         ResultadoTiro resultadoTiro = oponente.ReceberTiro(L, C);
         Button[][] tabuleiro = jogador.getTabuleiroOponente();
         Celula celula = (Celula) tabuleiro[L][C].getUserData();
+        if (resultadoTiro.Venceu){
+            gameState.setVencedor(jogador.getNome());
+        }
         if (resultadoTiro.Acertou){
             celula.status.set("Acerto");
             if(resultadoTiro.Afundou){
                 return "Navio Afundado";
             }
+
             return "Acertou!";
         }
 

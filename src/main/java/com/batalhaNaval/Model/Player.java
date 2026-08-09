@@ -28,39 +28,37 @@ public class Player {
     public ResultadoTiro ReceberTiro(int L, int C){
         boolean acertou = false;
         boolean afundou = false;
+        boolean venceu = false;
         Celula celulaTiro = (Celula) Tabuleiro[L][C].getUserData();
         if (celulaTiro.status.get().equals("Barco")){
             acertou = true;
             celulaTiro.status.set("Acerto");
-            if (celulaTiro.orientacaoBarco.equals("Vertical")){
-                int posicaoInicial = L + 1 - celulaTiro.pedacoN;
-                int totalAcertos = 0;
-                for (int i = posicaoInicial; i < posicaoInicial+celulaTiro.barco.tamanho; i++){
-                    Celula celula = (Celula) Tabuleiro[i][C].getUserData();
-                    if (celula.status.get().equals("Acerto")){
-                        totalAcertos +=1;
-                    }
-                }
-                if (totalAcertos == celulaTiro.barco.tamanho){
-                    afundou = true;
-                }
-            } else{
-                int posicaoInicial = C + 1 - celulaTiro.pedacoN;
-                int totalAcertos = 0;
-                for (int i = posicaoInicial; i < posicaoInicial + celulaTiro.barco.tamanho; i++){
-                    Celula celula = (Celula) Tabuleiro[L][i].getUserData();
-                    if (celula.status.get().equals("Acerto")){
-                        totalAcertos +=1;
-                    }
-                }
-                if (totalAcertos == celulaTiro.barco.tamanho){
-                    afundou = true;
+            if (celulaTiro.barco.barcoAfundado(celulaTiro.barco)){
+                afundou = true;
+                if (CheckarVitoriaOponente()){
+                    venceu = true;
+                } else{
+                    venceu = false;
                 }
             }
         } else if (celulaTiro.status.get().equals("Agua")){
             celulaTiro.status.set("Errou");
         }
-        return new ResultadoTiro(acertou, afundou);
+        return new ResultadoTiro(acertou, afundou, venceu);
+    }
+
+    public boolean CheckarVitoriaOponente(){
+        Barco[] barcos = getBarcosDoPlayer();
+        int afundados = 0;
+        for (int i = 0; i < barcos.length; i++) {
+            if (barcos[i].afundado){
+                afundados += 1;
+            }
+        }
+        if (afundados == barcos.length){
+            return true;
+        }
+        return false;
     }
 
     public Barco getBarcoSelecionado() {

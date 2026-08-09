@@ -25,21 +25,6 @@ public class Tabuleiro {
         Mensagem.set(texto);
     }
 
-//    public static void atualizarInterface(int [][] tabuleiro, Button btn){
-//        //atualiza o local atirado
-//        int [] posicao = (int[]) btn.getUserData();
-//        int L = posicao[0];
-//        int C = posicao[1];
-//        if (tabuleiro[L][C] == 0 || tabuleiro[L][C] == 2){
-//            btn.setStyle("-fx-background-color: lightblue;");
-//        } else if (tabuleiro[L][C] == 1) {
-//            btn.setStyle("-fx-background-color: lightgray;");
-//        } else if (tabuleiro[L][C] == 3){
-//            btn.setStyle("-fx-background-color: #ff5d5d");
-//        }
-//
-//    }
-
     public static void ReiniciarJogo(){
         //futuramente irá reiniciar o jogo inteiro
     }
@@ -151,7 +136,7 @@ public class Tabuleiro {
                     }
                     if (gameState.getGameStatus().get().equals("Ready")) {
                         if(checkarTabelaParaAtirar(L, C, jogador)){
-                            String resultado = AtirarNoOponente(L, C, jogador, oponente);
+                            String resultado = AtirarNoOponente(L, C, jogador, oponente, gameState);
                             if (resultado.equals("Errou")){
                                 MensagemTela(resultado);
                                 TrocarPlayer(gameState);
