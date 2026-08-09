@@ -24,6 +24,41 @@ public class Player {
         this.Tabuleiro = criarTabuleiro(gameState, this);
     }
 
+    public ResultadoTiro ReceberTiro(int L, int C){
+        boolean acertou = false;
+        boolean afundou = false;
+        Celula celulaTiro = (Celula) Tabuleiro[L][C].getUserData();
+        if (celulaTiro.status.equals("Barco")){
+            acertou = true;
+            if (celulaTiro.orientacaoBarco.equals("Vertical")){
+                int posicaoInicial = L + 1 - celulaTiro.pedacoN;
+                int totalAcertos = 0;
+                for (int i = posicaoInicial; i < posicaoInicial+celulaTiro.barco.tamanho; i++){
+                    Celula celula = (Celula) Tabuleiro[i][C].getUserData();
+                    if (celula.status.equals("Acerto")){
+                        totalAcertos +=1;
+                    }
+                }
+                if (totalAcertos +1 == celulaTiro.barco.tamanho){
+                    afundou = true;
+                }
+            } else{
+                int posicaoInicial = C + 1 - celulaTiro.pedacoN;
+                int totalAcertos = 0;
+                for (int i = posicaoInicial; i < posicaoInicial + celulaTiro.barco.tamanho; i++){
+                    Celula celula = (Celula) Tabuleiro[L][i].getUserData();
+                    if (celula.status.equals("Acerto")){
+                        totalAcertos +=1;
+                    }
+                }
+                if (totalAcertos +1 == celulaTiro.barco.tamanho){
+                    afundou = true;
+                }
+            }
+        }
+        return new ResultadoTiro(acertou, afundou);
+    }
+
     public Barco getBarcoSelecionado() {
         return BarcoSelecionado;
     }

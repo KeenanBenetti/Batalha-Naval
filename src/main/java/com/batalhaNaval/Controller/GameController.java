@@ -13,19 +13,24 @@ public class GameController {
         Button[][] botoes = jogador.getTabuleiro();
         Barco barco = jogador.getBarcoSelecionado();
         StringProperty orientaçao = jogador.getOrientacaoDoPosicionamento();
+        int pedacoN = 1;
         if (orientaçao.get().equals("Vertical")) {
             for (int i = L; i < L + barco.tamanho; i++) {
                 Celula celula = (Celula) botoes[i][C].getUserData();
                 celula.status = "Barco";
+                celula.setBarco(barco, orientaçao.get(), pedacoN);
                 botoes[i][C].setStyle("-fx-background-color:red;");
                 barco.usado = true;
+                pedacoN++;
             }
         } else if (orientaçao.get().equals("Horizontal")){
             for (int i = C; i < C + barco.tamanho; i++){
                 Celula celula = (Celula) botoes[L][i].getUserData();
                 celula.status = "Barco";
+                celula.setBarco(barco, orientaçao.get(), pedacoN);
                 botoes[L][i].setStyle("-fx-background-color:red;");
                 barco.usado = true;
+                pedacoN++;
             }
         }
         if (checkarStatusPlayer(jogador)){
