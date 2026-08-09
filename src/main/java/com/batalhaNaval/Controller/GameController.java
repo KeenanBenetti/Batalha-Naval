@@ -1,9 +1,6 @@
 package com.batalhaNaval.Controller;
 
-import com.batalhaNaval.Model.GameState;
-import com.batalhaNaval.Model.Barco;
-import com.batalhaNaval.Model.Player;
-import com.batalhaNaval.Model.Celula;
+import com.batalhaNaval.Model.*;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.Button;
 
@@ -17,7 +14,7 @@ public class GameController {
         if (orientaçao.get().equals("Vertical")) {
             for (int i = L; i < L + barco.tamanho; i++) {
                 Celula celula = (Celula) botoes[i][C].getUserData();
-                celula.status = "Barco";
+                celula.status.set("Barco");
                 celula.setBarco(barco, orientaçao.get(), pedacoN);
                 botoes[i][C].setStyle("-fx-background-color:red;");
                 barco.usado = true;
@@ -26,7 +23,7 @@ public class GameController {
         } else if (orientaçao.get().equals("Horizontal")){
             for (int i = C; i < C + barco.tamanho; i++){
                 Celula celula = (Celula) botoes[L][i].getUserData();
-                celula.status = "Barco";
+                celula.status.set("Barco");
                 celula.setBarco(barco, orientaçao.get(), pedacoN);
                 botoes[L][i].setStyle("-fx-background-color:red;");
                 barco.usado = true;
@@ -41,8 +38,8 @@ public class GameController {
     public static boolean atirar(int L, int C, Player jogador, GameState gameState) {
         Button[][] botoes = jogador.getTabuleiro();
         Celula celula = (Celula) botoes[L][C].getUserData();
-        if (celula.status.equals("Barco")){
-            celula.status = "Acerto";
+        if (celula.status.get().equals("Barco")){
+            celula.status.set("Acerto");
             checkarTabelaForWin(jogador, gameState);
             return true;
         }
@@ -73,10 +70,7 @@ public class GameController {
     public static boolean checkarTabelaParaAtirar(int L, int C, Player jogador){
         Button[][] tabuleiro = jogador.getTabuleiro();
         Celula celula = (Celula) tabuleiro[L][C].getUserData();
-        if (celula.status.equals("Agua")||celula.status.equals("Barco")){
-            return true;
-        }
-        return false;
+        return celula.status.get().equals("Agua") || celula.status.get().equals("Barco");
     }
 
     public static void checkarTabelaForWin(Player jogador, GameState gameState) {
@@ -86,7 +80,7 @@ public class GameController {
             for (int j = 0; j < tabela[0].length; j++) {
                 Celula celula = (Celula) tabela[i][j].getUserData();
 
-                if (celula.status.equals("Barco") ) {
+                if (celula.status.get().equals("Barco") ) {
                     return;
                 }
             }
@@ -114,7 +108,7 @@ public class GameController {
             for (int i = L; i < L + tamanho; i++){
                 Celula celula = (Celula) tabuleiro[i][C].getUserData();
 
-                if (!celula.status.equals("Agua") ){
+                if (!celula.status.get().equals("Agua") ){
                     return false;
                 }
             }
@@ -123,7 +117,7 @@ public class GameController {
             for (int i = C; i < C + tamanho; i++){
                 Celula celula = (Celula) tabuleiro[L][i].getUserData();
 
-                if (!celula.status.equals("Agua") ){
+                if (!celula.status.get().equals("Agua") ){
                     return false;
                 }
             }
@@ -145,6 +139,49 @@ public class GameController {
             gameState.setVezDe(Jogador2);
         } else {
             gameState.setVezDe(Jogador1);
+        }
+    }
+
+    public static String AtirarNoOponente(int L, int C, Player jogador, Player oponente){
+        ResultadoTiro resultadoTiro = oponente.ReceberTiro(L, C);
+        Button[][] tabuleiro = jogador.getTabuleiroOponente();
+        Celula celula = (Celula) tabuleiro[L][C].getUserData();
+        if (resultadoTiro.Acertou){
+            celula.status.set("Acerto");
+            if(resultadoTiro.Afundou){
+                return "Navio Afundado";
+            }
+            return "Acertou!";
+        }
+
+        celula.status.set("Errou");
+
+        return "Errou";
+    }
+
+    public static void AddListenerCores(Player jogador, String qualTabela){
+        Button[][] tabela;
+
+        if (qualTabela.equals("Principal")){
+            tabela = jogador.getTabuleiro();
+        } else{
+            tabela = jogador.getTabuleiroOponente();
+        }
+        for (int i = 0; i < tabela.length; i++ ){
+            for (int j = 0; j < tabela[i].length; j++){
+                Button btn = tabela[i][j];
+
+                Celula celula = (Celula) btn.getUserData();
+
+                celula.status.addListener((observable, oldValue, newValue) -> {
+                    switch (celula.status.get()) {
+                        case "Agua" -> btn.setStyle("-fx-background-color: lightblue;");
+                        case "Barco" -> btn.setStyle("-fx-background-color: gray;");
+                        case "Acerto" -> btn.setStyle("-fx-background-color: red;");
+                        case "Errou" -> btn.setStyle("-fx-background-color: white;");
+                    }
+                });
+            }
         }
     }
 }

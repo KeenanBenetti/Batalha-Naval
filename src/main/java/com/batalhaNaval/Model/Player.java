@@ -10,6 +10,7 @@ import static com.batalhaNaval.UI.Tabuleiro.criarTabuleiro;
 public class Player {
     String Nome;
     Button[][] Tabuleiro;
+    Button[][] TabuleiroOponente;
     String StatusDoPlayer;
     StringProperty OrientacaoDoPosicionamento = new SimpleStringProperty();
     Barco[] BarcosDoPlayer;
@@ -28,14 +29,14 @@ public class Player {
         boolean acertou = false;
         boolean afundou = false;
         Celula celulaTiro = (Celula) Tabuleiro[L][C].getUserData();
-        if (celulaTiro.status.equals("Barco")){
+        if (celulaTiro.status.get().equals("Barco")){
             acertou = true;
             if (celulaTiro.orientacaoBarco.equals("Vertical")){
                 int posicaoInicial = L + 1 - celulaTiro.pedacoN;
                 int totalAcertos = 0;
                 for (int i = posicaoInicial; i < posicaoInicial+celulaTiro.barco.tamanho; i++){
                     Celula celula = (Celula) Tabuleiro[i][C].getUserData();
-                    if (celula.status.equals("Acerto")){
+                    if (celula.status.get().equals("Acerto")){
                         totalAcertos +=1;
                     }
                 }
@@ -47,7 +48,7 @@ public class Player {
                 int totalAcertos = 0;
                 for (int i = posicaoInicial; i < posicaoInicial + celulaTiro.barco.tamanho; i++){
                     Celula celula = (Celula) Tabuleiro[L][i].getUserData();
-                    if (celula.status.equals("Acerto")){
+                    if (celula.status.get().equals("Acerto")){
                         totalAcertos +=1;
                     }
                 }
@@ -85,5 +86,13 @@ public class Player {
 
     public String getNome() {
         return Nome;
+    }
+
+    public void setTabuleiroOponente(Button[][] tabuleiroOponente) {
+        TabuleiroOponente = tabuleiroOponente;
+    }
+
+    public Button[][] getTabuleiroOponente() {
+        return TabuleiroOponente;
     }
 }

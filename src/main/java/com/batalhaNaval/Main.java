@@ -12,6 +12,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import static com.batalhaNaval.Controller.GameController.AddListenerCores;
 import static com.batalhaNaval.UI.Tabuleiro.*;
 
 
@@ -24,13 +25,21 @@ public class Main extends Application {
         GameState gameState = new GameState("Jogador 1",  "Jogador 1", "Jogador 2", "Setup");
 
         Player jogador1 = new Player("Jogador 1", gameState);
+        AddListenerCores(jogador1, "Principal");
         Player jogador2 = new Player("Jogador 2", gameState);
+        AddListenerCores(jogador2, "Principal");
+        jogador1.setTabuleiroOponente(criarTabuleiroOponente(gameState, jogador1, jogador2));
+        AddListenerCores(jogador1, "Oponente");
+        jogador2.setTabuleiroOponente(criarTabuleiroOponente(gameState, jogador2, jogador1));
+        AddListenerCores(jogador2, "Oponente");
 
         //layout inicial
         // duas caixas verticais uma para guardar os barcos no inicio do jogo e outra para a tabela
 
-        GridPane gridP1 = criarGridPane(jogador1);
-        GridPane gridP2 = criarGridPane(jogador2);
+        GridPane gridP1 = criarGridPane(jogador1, "Principal");
+        GridPane gridP2 = criarGridPane(jogador2, "Principal");
+        GridPane gridP1Oponente = criarGridPane(jogador1, "Oponente");
+        GridPane gridP2Oponente = criarGridPane(jogador2, "Oponente");
 
         Label status1 = new Label();
         Label status2 = new Label();
@@ -46,11 +55,12 @@ public class Main extends Application {
         VBox statusBox2 = new VBox(20, topBar2);
         statusBox1.setStyle("-fx-alignment: center");
         statusBox2.setStyle("-fx-alignment: center");
-        HBox barquinhosPlayer1 = criarBarquinhos(jogador1, gameState);
-        HBox barquinhosPlayer2 = criarBarquinhos(jogador2, gameState);
-        //HBox grids = new HBox(20, gridP1, gridP2);
-        VBox player2 = new VBox(gridP2, barquinhosPlayer2);
-        VBox player1 = new VBox(gridP1, barquinhosPlayer1);
+        HBox barquinhosPlayer1 = criarBarquinhos(jogador1);
+        HBox barquinhosPlayer2 = criarBarquinhos(jogador2);
+        HBox gridsP1 = new HBox(20, gridP1, gridP1Oponente);
+        HBox gridsP2 = new HBox(20, gridP2, gridP2Oponente);
+        VBox player1 = new VBox(gridsP1, barquinhosPlayer1);
+        VBox player2 = new VBox(gridsP2, barquinhosPlayer2);
         //HBox colunas = new HBox(40, player1, player2);
         Label mensagem1 = new Label();
         Label mensagem2 = new Label();
