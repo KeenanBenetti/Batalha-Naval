@@ -1,12 +1,10 @@
 Planejamento:
 
-Separação de funções para arquivos separados para melhor desenvolvimento - feito
+Ajuste nos estados da minha aplicação: Modelar Player e tabuleiro como classes - feito
 
-Ajuste nos estados da minha aplicação: Modelar Player e tabuleiro como classes
+Ajuste na função de criar tabuleiro, já é maior que a tais carla - feito
 
-Ajuste na função de criar tabuleiro, já é maior que a tais carla
-
-Adição de uma classe GameStatus no lugar da string
+Adição de uma classe GameStatus no lugar da string - feito
 
 Refatoração da janela do game para duas instancias separadas rodando de forma concorrente
 O objetivo disso é que cada um tenha sua tela e facilite a melhoria posterior de multiplayer
