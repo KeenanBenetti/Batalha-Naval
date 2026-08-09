@@ -1,15 +1,6 @@
 Planejamento:
 
-Ajuste nos estados da minha aplicação: Modelar Player e tabuleiro como classes - feito
-
-Ajuste na função de criar tabuleiro, já é maior que a tais carla - feito
-
-Adição de uma classe GameStatus no lugar da string - feito
-
-Refatoração da janela do game para duas instancias separadas rodando de forma concorrente
-O objetivo disso é que cada um tenha sua tela e facilite a melhoria posterior de multiplayer
-
-Melhoria do visual do game usando pré-visualização dos barcos com hover
+Melhoria do visual do game usando pré-visualização dos barcos com hover - feito
 
 Menu para seleção de modo de jogo single-player vs multiplayer
 

@@ -45,6 +45,7 @@ public class Tabuleiro {
     }
 
 //    public static void TelaVencedor(String texto, Stage primaryStage) {
+//    public static void TelaVencedor(String texto, Stage primaryStage) {
 //        Label aviso = new Label(texto);
 //        aviso.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
 //        Button reiniciar = new Button("Reiniciar");
@@ -70,9 +71,30 @@ public class Tabuleiro {
                 int C = j;
 
                 btn.setUserData(new Celula("Agua", L, C));
+                btn.setStyle("-fx-background-color: lightblue;");
 
 
                 tabuleiro[i][j] = btn;
+
+                btn.setOnMouseEntered(e -> {
+                    if (gameState.getVezDe().get().equals(jogador.getNome()) && gameState.getGameStatus().get().equals("Setup")){
+                        if (!jogador.getBarcoSelecionado().usado){
+                            if (checkarEspaçoParaBarco(L, C, jogador)){
+                                AdicionarHoverBarco(L, C, jogador);
+                            }
+                        }
+                    }
+                });
+
+                btn.setOnMouseExited(e -> {
+                    if (gameState.getVezDe().get().equals(jogador.getNome()) && gameState.getGameStatus().get().equals("Setup")){
+                        if (!jogador.getBarcoSelecionado().usado){
+                            if (checkarEspaçoParaBarco(L, C, jogador)){
+                                RemoverHoverBarco(L, C, jogador);
+                            }
+                        }
+                    }
+                });
 
                 btn.setOnAction(e ->{
                     if (!gameState.getVezDe().get().equals(jogador.getNome())){
@@ -108,7 +130,7 @@ public class Tabuleiro {
                 int C = j;
 
                 btn.setUserData(new Celula("Agua", L, C));
-
+                btn.setStyle("-fx-background-color: lightblue;");
 
                 tabuleiro[i][j] = btn;
 
@@ -215,6 +237,20 @@ public class Tabuleiro {
         VBox vbox = new VBox(20, btn, lborientaçao);
         barquinhos.getChildren().add(vbox);
         return barquinhos;
+    }
+
+    public static void mudarCorCelula(Button btn, String qualTabela){
+        Celula celula = (Celula) btn.getUserData();
+        switch (celula.status.get()) {
+            case "Agua" -> btn.setStyle("-fx-background-color: lightblue;");
+            case "Barco" -> {
+                if(qualTabela.equals("Principal")){
+                    btn.setStyle("-fx-background-color: gray;");
+                }
+            }
+            case "Acerto" -> btn.setStyle("-fx-background-color: red;");
+            case "Errou" -> btn.setStyle("-fx-background-color: white;");
+        }
     }
 
 }

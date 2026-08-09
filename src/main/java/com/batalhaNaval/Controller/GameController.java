@@ -1,8 +1,11 @@
 package com.batalhaNaval.Controller;
 
 import com.batalhaNaval.Model.*;
+import com.batalhaNaval.UI.Tabuleiro;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.Button;
+
+import static com.batalhaNaval.UI.Tabuleiro.mudarCorCelula;
 
 public class GameController {
 
@@ -68,9 +71,9 @@ public class GameController {
     }
 
     public static boolean checkarTabelaParaAtirar(int L, int C, Player jogador){
-        Button[][] tabuleiro = jogador.getTabuleiro();
+        Button[][] tabuleiro = jogador.getTabuleiroOponente();
         Celula celula = (Celula) tabuleiro[L][C].getUserData();
-        return celula.status.get().equals("Agua") || celula.status.get().equals("Barco");
+        return celula.status.get().equals("Agua");
     }
 
     public static void checkarTabelaForWin(Player jogador, GameState gameState) {
@@ -174,14 +177,51 @@ public class GameController {
                 Celula celula = (Celula) btn.getUserData();
 
                 celula.status.addListener((observable, oldValue, newValue) -> {
-                    switch (celula.status.get()) {
-                        case "Agua" -> btn.setStyle("-fx-background-color: lightblue;");
-                        case "Barco" -> btn.setStyle("-fx-background-color: gray;");
-                        case "Acerto" -> btn.setStyle("-fx-background-color: red;");
-                        case "Errou" -> btn.setStyle("-fx-background-color: white;");
-                    }
+                    mudarCorCelula(btn, qualTabela);
                 });
+
+                celula.hover.addListener(((observable, oldValue, newValue) -> {
+                    switch (celula.hover.get()) {
+                        case "Hover" -> btn.setStyle("-fx-background-color: gray;");
+                        case "" -> {
+                            mudarCorCelula(btn, qualTabela);
+                        }
+                    }
+                }));
             }
         }
     }
+
+    public static void AdicionarHoverBarco(int L, int C, Player jogador){
+        Button[][] tabuleiro = jogador.getTabuleiro();
+
+        if (jogador.getOrientacaoDoPosicionamento().get().equals("Vertical")){
+            for (int i = L; i < L + jogador.getBarcoSelecionado().tamanho; i++) {
+                Celula celula = (Celula) tabuleiro[i][C].getUserData();
+                celula.hover.set("Hover");
+            }
+        } else {
+            for (int i = C; i < C + jogador.getBarcoSelecionado().tamanho; i++) {
+                Celula celula = (Celula) tabuleiro[L][i].getUserData();
+                celula.hover.set("Hover");
+            }
+        }
+    }
+
+    public static void RemoverHoverBarco(int L, int C, Player jogador){
+        Button[][] tabuleiro = jogador.getTabuleiro();
+
+        if (jogador.getOrientacaoDoPosicionamento().get().equals("Vertical")){
+            for (int i = L; i < L + jogador.getBarcoSelecionado().tamanho; i++) {
+                Celula celula = (Celula) tabuleiro[i][C].getUserData();
+                celula.hover.set("");
+            }
+        } else {
+            for (int i = C; i < C + jogador.getBarcoSelecionado().tamanho; i++) {
+                Celula celula = (Celula) tabuleiro[L][i].getUserData();
+                celula.hover.set("");
+            }
+        }
+    }
+
 }

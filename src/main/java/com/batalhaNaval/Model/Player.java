@@ -31,6 +31,7 @@ public class Player {
         Celula celulaTiro = (Celula) Tabuleiro[L][C].getUserData();
         if (celulaTiro.status.get().equals("Barco")){
             acertou = true;
+            celulaTiro.status.set("Acerto");
             if (celulaTiro.orientacaoBarco.equals("Vertical")){
                 int posicaoInicial = L + 1 - celulaTiro.pedacoN;
                 int totalAcertos = 0;
@@ -40,7 +41,7 @@ public class Player {
                         totalAcertos +=1;
                     }
                 }
-                if (totalAcertos +1 == celulaTiro.barco.tamanho){
+                if (totalAcertos == celulaTiro.barco.tamanho){
                     afundou = true;
                 }
             } else{
@@ -52,10 +53,12 @@ public class Player {
                         totalAcertos +=1;
                     }
                 }
-                if (totalAcertos +1 == celulaTiro.barco.tamanho){
+                if (totalAcertos == celulaTiro.barco.tamanho){
                     afundou = true;
                 }
             }
+        } else if (celulaTiro.status.get().equals("Agua")){
+            celulaTiro.status.set("Errou");
         }
         return new ResultadoTiro(acertou, afundou);
     }

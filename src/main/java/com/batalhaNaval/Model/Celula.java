@@ -5,6 +5,7 @@ import javafx.beans.property.StringProperty;
 
 public class Celula {
     public StringProperty status = new SimpleStringProperty();
+    public StringProperty hover = new SimpleStringProperty();
     int L;
     int C;
     Barco barco;
@@ -13,6 +14,7 @@ public class Celula {
 
     public Celula(String status, int L, int C) {
         this.status.set(status);
+        this.hover.set("");
         this.L = L;
         this.C = C;
     }
