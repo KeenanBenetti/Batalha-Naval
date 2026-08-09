@@ -17,7 +17,6 @@ import static com.batalhaNaval.UI.Tabuleiro.*;
 
 public class Main extends Application {
 
-    IntegerProperty jogadorAtual= new SimpleIntegerProperty(1);
     private Stage primaryStage;
 
     @Override
@@ -36,8 +35,11 @@ public class Main extends Application {
         GridPane gridP2 = criarGridPane(jogador2);
 
         Label status = new Label();
+        Label topGameState = new Label();
         status.textProperty().bind(gameState.getVezDe());
-        VBox statusBox = new VBox(20, status);
+        topGameState.textProperty().bind(gameState.getGameStatus());
+        HBox topBar = new HBox(20, status, topGameState);
+        VBox statusBox = new VBox(20, topBar);
         statusBox.setStyle("-fx-alignment: center");
         HBox barquinhosPlayer1 = criarBarquinhos(jogador1, gameState);
         HBox barquinhosPlayer2 = criarBarquinhos(jogador2, gameState);

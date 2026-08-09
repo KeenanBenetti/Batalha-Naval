@@ -9,7 +9,7 @@ import javafx.scene.control.Button;
 
 public class GameController {
 
-    public static void adicionarBarco(int L, int C, Player jogador){
+    public static void adicionarBarco(int L, int C, Player jogador, GameState gameState){
         Button[][] botoes = jogador.getTabuleiro();
         Barco barco = jogador.getBarcoSelecionado();
         StringProperty orientaçao = jogador.getOrientacaoDoPosicionamento();
@@ -27,6 +27,9 @@ public class GameController {
                 botoes[L][i].setStyle("-fx-background-color:red;");
                 barco.usado = true;
             }
+        }
+        if (checkarStatusPlayer(jogador)){
+            gameState.setSetupPlayersReady(gameState.getSetupPlayersReady()+1);
         }
     }
 
@@ -52,8 +55,9 @@ public class GameController {
         return barcos;
     }
 
-    public static boolean checkarStatusPlayer(Barco[] barcosPlayerAtual){
-        for (Barco barco : barcosPlayerAtual) {
+    public static boolean checkarStatusPlayer(Player jogador){
+        Barco[] barcos = jogador.getBarcosDoPlayer();
+        for (Barco barco : barcos) {
             if (!barco.usado) {
                 return false;
             }
@@ -127,6 +131,10 @@ public class GameController {
         String JogadorAtual = gameState.getVezDe().get();
         String Jogador1 = gameState.getJogador1Nome();
         String Jogador2 = gameState.getJogador2Nome();
+
+        if (gameState.getSetupPlayersReady() == 2){
+            gameState.setGameStatus("Ready");
+        }
 
         if (JogadorAtual.equals(Jogador1)){
             gameState.setVezDe(Jogador2);

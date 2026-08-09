@@ -6,15 +6,17 @@ import javafx.beans.property.StringProperty;
 public class GameState {
     StringProperty VezDe = new SimpleStringProperty();
     String Jogador1Nome;
-    String  Jogador2Nome;
-    String GameStatus;
+    String Jogador2Nome;
+    int SetupPlayersReady;
+    StringProperty GameStatus = new SimpleStringProperty();
     String Vencedor;
 
     public GameState(String VezDe, String Jogador1Nome, String Jogador2Nome, String GameStatus) {
         this.VezDe.set(VezDe);
         this.Jogador1Nome = Jogador1Nome;
         this.Jogador2Nome = Jogador2Nome;
-        this.GameStatus = GameStatus;
+        this.SetupPlayersReady = 0;
+        this.GameStatus.set(GameStatus);
         this.Vencedor = null;
     }
 
@@ -34,15 +36,23 @@ public class GameState {
         VezDe.set(vezDe);
     }
 
-    public String getGameStatus() {
+    public StringProperty getGameStatus() {
         return GameStatus;
     }
 
     public void setGameStatus(String gameStatus) {
-        GameStatus = gameStatus;
+        GameStatus.set(gameStatus);
     }
 
     public void setVencedor(String vencedor) {
         Vencedor = vencedor;
+    }
+
+    public int getSetupPlayersReady() {
+        return SetupPlayersReady;
+    }
+
+    public void setSetupPlayersReady(int setupPlayersReady) {
+        SetupPlayersReady = setupPlayersReady;
     }
 }

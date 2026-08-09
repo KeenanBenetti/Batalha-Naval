@@ -83,18 +83,18 @@ public class Tabuleiro {
                         MensagemTela("Não é sua vez, aguarde!");
                         return;
                     }
-                    if (gameState.getGameStatus().equals("Setup")){
+                    if (gameState.getGameStatus().get().equals("Setup")){
                         if (jogador.getBarcoSelecionado().usado){
                             MensagemTela("Esse barco já foi usado, escolha outro!");
                         } else {
                             if (checkarEspaçoParaBarco(L, C, jogador)){
-                                adicionarBarco(L, C, jogador);
+                                adicionarBarco(L, C, jogador, gameState);
                                 TrocarPlayer(gameState);
                             } else {
                                 MensagemTela("Tente novamente em outro lugar!");
                             }
                         }
-                    } else if (gameState.getGameStatus().equals("Ready")) {
+                    } else if (gameState.getGameStatus().get().equals("Ready")) {
                         if(checkarTabelaParaAtirar(L, C, jogador)){
                             if (GameController.atirar(L, C, jogador, gameState)){
                                 MensagemTela("Acertou!");
