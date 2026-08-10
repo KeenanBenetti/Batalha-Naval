@@ -1,8 +1,7 @@
 Planejamento:
 
-Melhoria do visual do game usando pré-visualização dos barcos com hover - feito
 
-ajuste na pagina de vencedor
+ajuste na pagina de vencedor - feito
 
 adição de funçao de reiniciar
 

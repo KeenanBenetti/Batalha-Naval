@@ -66,8 +66,7 @@ public class Tabuleiro {
                 int C = j;
 
                 btn.setUserData(new Celula("Agua", L, C));
-                btn.setStyle("-fx-background-color: lightblue;");
-
+                btn.setStyle("-fx-background-image: url('/Agua.gif');");
 
                 tabuleiro[i][j] = btn;
 
@@ -125,7 +124,7 @@ public class Tabuleiro {
                 int C = j;
 
                 btn.setUserData(new Celula("Agua", L, C));
-                btn.setStyle("-fx-background-color: lightblue;");
+                btn.setStyle("-fx-background-image: url('/Agua.gif');");
 
                 tabuleiro[i][j] = btn;
 
@@ -211,7 +210,8 @@ public class Tabuleiro {
     public static void mudarCorCelula(Button btn, String qualTabela){
         Celula celula = (Celula) btn.getUserData();
         switch (celula.status.get()) {
-            case "Agua" -> btn.setStyle("-fx-background-color: lightblue;");
+            //case "Agua" -> btn.setStyle("-fx-background-color: lightblue;");
+            case "Agua" -> btn.setStyle("-fx-background-image: url('/Agua.gif');");
             case "Barco" -> {
                 if(qualTabela.equals("Principal")){
                     btn.setStyle("-fx-background-color: gray;");
