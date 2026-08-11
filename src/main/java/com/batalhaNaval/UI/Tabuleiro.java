@@ -7,6 +7,7 @@ import javafx.beans.property.StringProperty;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -209,6 +210,7 @@ public class Tabuleiro {
 
     public static void mudarCorCelula(Button btn, String qualTabela){
         Celula celula = (Celula) btn.getUserData();
+
         switch (celula.status.get()) {
             //case "Agua" -> btn.setStyle("-fx-background-color: lightblue;");
             case "Agua" -> btn.setStyle("-fx-background-image: url('/Agua.gif');");
@@ -217,8 +219,13 @@ public class Tabuleiro {
                     btn.setStyle("-fx-background-color: gray;");
                 }
             }
-            case "Acerto" -> btn.setStyle("-fx-background-color: red;");
-            case "Errou" -> btn.setStyle("-fx-background-color: white;");
+            case "Acerto" -> btn.setStyle("-fx-background-image: url('/Explosao.gif');");
+            case "Errou" -> {
+                ColorAdjust escurecer = new ColorAdjust();
+                escurecer.setBrightness(-0.2);
+                btn.setStyle("-fx-background-image: url('/Agua.gif'); ");
+                btn.setEffect(escurecer);
+            }
         }
     }
 
