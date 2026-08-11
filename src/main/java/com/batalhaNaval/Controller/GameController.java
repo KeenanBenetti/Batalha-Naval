@@ -21,7 +21,6 @@ public class GameController {
                 Celula celula = (Celula) botoes[i][C].getUserData();
                 celula.status.set("Barco");
                 celula.setBarco(barco, orientaçao.get(), pedacoN);
-                botoes[i][C].setStyle("-fx-background-color:red;");
                 barco.usado = true;
                 pedacoN++;
             }
@@ -30,7 +29,6 @@ public class GameController {
                 Celula celula = (Celula) botoes[L][i].getUserData();
                 celula.status.set("Barco");
                 celula.setBarco(barco, orientaçao.get(), pedacoN);
-                botoes[L][i].setStyle("-fx-background-color:red;");
                 barco.usado = true;
                 pedacoN++;
             }
