@@ -1,6 +1,8 @@
 package com.batalhaNaval.UI;
 
 import com.batalhaNaval.Model.*;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -12,6 +14,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import static com.batalhaNaval.Controller.GameController.*;
 import static com.batalhaNaval.Controller.GameController.adicionarBarco;
@@ -67,7 +70,7 @@ public class Tabuleiro {
                 int C = j;
 
                 btn.setUserData(new Celula("Agua", L, C));
-                btn.setStyle("-fx-background-image: url('/Agua.gif');");
+                btn.setStyle("-fx-background-size:cover;" + "-fx-background-image: url('/Agua.gif'); ");
 
                 tabuleiro[i][j] = btn;
 
@@ -125,7 +128,7 @@ public class Tabuleiro {
                 int C = j;
 
                 btn.setUserData(new Celula("Agua", L, C));
-                btn.setStyle("-fx-background-image: url('/Agua.gif');");
+                btn.setStyle("-fx-background-size:cover;" + "-fx-background-image: url('/Agua.gif'); ");
 
                 tabuleiro[i][j] = btn;
 
@@ -213,20 +216,43 @@ public class Tabuleiro {
 
         switch (celula.status.get()) {
             //case "Agua" -> btn.setStyle("-fx-background-color: lightblue;");
-            case "Agua" -> btn.setStyle("-fx-background-image: url('/Agua.gif');");
+            case "Agua" -> btn.setStyle("-fx-background-size:cover;" + "-fx-background-image: url('/Agua.gif'); ");
             case "Barco" -> {
                 if(qualTabela.equals("Principal")){
                     btn.setStyle("-fx-background-color: gray;");
                 }
             }
-            case "Acerto" -> btn.setStyle("-fx-background-image: url('/Explosao.gif');");
+            case "Acerto" -> {
+                //btn.setStyle("-fx-background-image: url('/Explosao.gif');");
+                RodarAnimação("Explosao", btn);
+            }
             case "Errou" -> {
                 ColorAdjust escurecer = new ColorAdjust();
                 escurecer.setBrightness(-0.2);
-                btn.setStyle("-fx-background-image: url('/Agua.gif'); ");
+                btn.setStyle("-fx-background-size:cover;" + "-fx-background-image: url('/Agua.gif'); ");
                 btn.setEffect(escurecer);
             }
         }
+    }
+
+    public static void RodarAnimação(String qualAnimacao, Button btn){
+        int frame[] = {0};
+        int Nframes = 0;
+        if (qualAnimacao.equals("Explosao")) {
+            Nframes = 12;
+        }
+        String imagem[] = {""};
+
+        Timeline timeline = new Timeline(
+            new KeyFrame(Duration.millis(100), e -> {
+                imagem[0] = "sprite_" + frame[0] + ".png";
+                btn.setStyle("-fx-background-size:cover;" + "-fx-background-image: url('/Explosao/" + imagem[0] + "');");
+                frame[0] ++;
+            })
+        );
+
+        timeline.setCycleCount(Nframes);
+        timeline.play();
     }
 
 }
