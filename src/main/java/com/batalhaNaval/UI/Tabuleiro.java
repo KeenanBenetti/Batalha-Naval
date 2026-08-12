@@ -303,6 +303,27 @@ public class Tabuleiro {
             timeline.setCycleCount(Timeline.INDEFINITE);
             timeline.play();
             btn.getProperties().put("animacao", timeline);
+
+        } else if (celula.getBarco().nome.equals("Encouraçado")) {
+            int frame[] = {0};
+            int Nframes = 24;
+            String imagem[] = {""};
+
+            Timeline timeline = new Timeline(
+                    new KeyFrame(Duration.millis(100), e -> {
+                        imagem[0] = "sprite_" + frame[0] + "_tile_" + pedaco + ".png";
+                        btn.setStyle("-fx-background-size:cover;" + "-fx-background-image: url('/Barcos/Encouraçado/" + orientacao + "/" + imagem[0] + "');");
+                        frame[0] ++;
+
+                        if (frame[0] == Nframes){
+                            frame[0] = 0;
+                        }
+                    })
+            );
+
+            timeline.setCycleCount(Timeline.INDEFINITE);
+            timeline.play();
+            btn.getProperties().put("animacao", timeline);
         } else{
             btn.setStyle("-fx-background-color: gray;");
         }
