@@ -32,7 +32,7 @@ public class Player {
         Celula celulaTiro = (Celula) Tabuleiro[L][C].getUserData();
         if (celulaTiro.status.get().equals("Barco")){
             acertou = true;
-            celulaTiro.status.set("Acerto");
+            celulaTiro.status.set("Explosao");
             if (celulaTiro.barco.barcoAfundado(celulaTiro.barco)){
                 afundou = true;
                 if (CheckarVitoriaOponente()){

@@ -15,21 +15,21 @@ public class GameController {
         Button[][] botoes = jogador.getTabuleiro();
         Barco barco = jogador.getBarcoSelecionado();
         StringProperty orientaçao = jogador.getOrientacaoDoPosicionamento();
-        int pedacoN = 1;
+        int pedacoN = 0;
         if (orientaçao.get().equals("Vertical")) {
             for (int i = L; i < L + barco.tamanho; i++) {
                 Celula celula = (Celula) botoes[i][C].getUserData();
-                celula.status.set("Barco");
                 celula.setBarco(barco, orientaçao.get(), pedacoN);
                 barco.usado = true;
+                celula.status.set("Barco");
                 pedacoN++;
             }
         } else if (orientaçao.get().equals("Horizontal")){
             for (int i = C; i < C + barco.tamanho; i++){
                 Celula celula = (Celula) botoes[L][i].getUserData();
-                celula.status.set("Barco");
                 celula.setBarco(barco, orientaçao.get(), pedacoN);
                 barco.usado = true;
+                celula.status.set("Barco");
                 pedacoN++;
             }
         }
@@ -40,7 +40,7 @@ public class GameController {
 
     public static Barco[] CriarBarcos() {
         Barco[] barcos = new Barco[5];
-        barcos[0] = new Barco("Porta-aviões", 5);
+        barcos[0] = new Barco("Porta-Aviões", 5);
         barcos[1] = new Barco("Encouraçado", 4);
         barcos[2] = new Barco("Cruzador", 3);
         barcos[3] = new Barco("Submarino", 3);
@@ -126,7 +126,7 @@ public class GameController {
             gameState.setVencedor(jogador.getNome());
         }
         if (resultadoTiro.Acertou){
-            celula.status.set("Acerto");
+            celula.status.set("Explosao");
             if(resultadoTiro.Afundou){
                 return "Navio Afundado";
             }

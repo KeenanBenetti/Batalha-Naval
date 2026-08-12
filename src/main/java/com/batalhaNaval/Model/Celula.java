@@ -24,4 +24,20 @@ public class Celula {
         this.orientacaoBarco = orientacaoBarco;
         this.pedacoN = pedacoN;
     }
+
+    public Barco getBarco() {
+        return barco;
+    }
+
+    public String getOrientacaoBarco() {
+        return orientacaoBarco;
+    }
+
+    public int getPedacoN() {
+        return pedacoN;
+    }
+
+    public void setStatus(String status) {
+        this.status.set(status);
+    }
 }

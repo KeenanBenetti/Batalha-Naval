@@ -16,6 +16,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.sql.Time;
+
 import static com.batalhaNaval.Controller.GameController.*;
 import static com.batalhaNaval.Controller.GameController.adicionarBarco;
 import static com.batalhaNaval.Controller.GameController.checkarEspaçoParaBarco;
@@ -219,12 +221,16 @@ public class Tabuleiro {
             case "Agua" -> btn.setStyle("-fx-background-size:cover;" + "-fx-background-image: url('/Agua.gif'); ");
             case "Barco" -> {
                 if(qualTabela.equals("Principal")){
-                    btn.setStyle("-fx-background-color: gray;");
+                    BarcoAnimaçao(btn);
                 }
             }
+            case "Explosao" -> {
+                RodarAnimacao("Explosao", btn);
+
+            }
             case "Acerto" -> {
-                //btn.setStyle("-fx-background-image: url('/Explosao.gif');");
-                RodarAnimação("Explosao", btn);
+                RodarAnimacao("Acerto", btn);
+
             }
             case "Errou" -> {
                 ColorAdjust escurecer = new ColorAdjust();
@@ -235,24 +241,71 @@ public class Tabuleiro {
         }
     }
 
-    public static void RodarAnimação(String qualAnimacao, Button btn){
+    public static void RodarAnimacao(String qualAnimacao, Button btn){
         int frame[] = {0};
-        int Nframes = 0;
-        if (qualAnimacao.equals("Explosao")) {
-            Nframes = 12;
-        }
+        int totalFrames = 12;
+        int ciclos = 0;
         String imagem[] = {""};
+        Celula celula = (Celula) btn.getUserData();
 
         Timeline timeline = new Timeline(
             new KeyFrame(Duration.millis(100), e -> {
                 imagem[0] = "sprite_" + frame[0] + ".png";
-                btn.setStyle("-fx-background-size:cover;" + "-fx-background-image: url('/Explosao/" + imagem[0] + "');");
+                btn.setStyle("-fx-background-size:cover;" + "-fx-background-image: url('/"+qualAnimacao+"/" + imagem[0] + "');");
                 frame[0] ++;
+                if (qualAnimacao.equals("Explosao") && frame[0] == 12){
+                    celula.setStatus("Acerto");
+                }
+                if (qualAnimacao.equals("Acerto") && frame[0] == totalFrames){
+                    frame[0] = 0;
+                }
             })
         );
 
-        timeline.setCycleCount(Nframes);
+        if (qualAnimacao.equals("Explosao")) {
+            ciclos = totalFrames;
+        } else if(qualAnimacao.equals("Acerto")){
+            ciclos = Timeline.INDEFINITE;
+        }
+
+        Timeline animacaoAnterior = (Timeline) btn.getProperties().get("animacao");
+        if( animacaoAnterior != null){
+            animacaoAnterior.stop();
+        }
+        timeline.setCycleCount(ciclos);
         timeline.play();
+        btn.getProperties().put("animacao", timeline);
+    }
+
+    public static void BarcoAnimaçao(Button btn){
+        Celula celula = (Celula) btn.getUserData();
+
+        int pedaco = celula.getPedacoN();
+        String orientacao = celula.getOrientacaoBarco();
+
+        if (celula.getBarco().nome.equals("Porta-Aviões")){
+            int frame[] = {0};
+            int Nframes = 24;
+            String imagem[] = {""};
+
+            Timeline timeline = new Timeline(
+                    new KeyFrame(Duration.millis(100), e -> {
+                        imagem[0] = "sprite_" + frame[0] + "_tile_" + pedaco + ".png";
+                        btn.setStyle("-fx-background-size:cover;" + "-fx-background-image: url('/Barcos/Porta-Aviao/" + orientacao + "/" + imagem[0] + "');");
+                        frame[0] ++;
+
+                        if (frame[0] == Nframes){
+                            frame[0] = 0;
+                        }
+                    })
+            );
+
+            timeline.setCycleCount(Timeline.INDEFINITE);
+            timeline.play();
+            btn.getProperties().put("animacao", timeline);
+        } else{
+            btn.setStyle("-fx-background-color: gray;");
+        }
     }
 
 }
