@@ -10,14 +10,13 @@ public class GameState {
     int SetupPlayersReady;
     StringProperty GameStatus = new SimpleStringProperty();
     StringProperty Vencedor = new SimpleStringProperty();
+    StringProperty gamemode = new SimpleStringProperty();
 
-    public GameState(String VezDe, String Jogador1Nome, String Jogador2Nome, String GameStatus) {
-        this.VezDe.set(VezDe);
-        this.Jogador1Nome = Jogador1Nome;
-        this.Jogador2Nome = Jogador2Nome;
+    public GameState() {
         this.SetupPlayersReady = 0;
-        this.GameStatus.set(GameStatus);
+        this.GameStatus.set("Setup");
         this.Vencedor.set("");
+        this.gamemode.set("menu");
     }
 
     public StringProperty getVezDe() {
@@ -58,5 +57,21 @@ public class GameState {
 
     public void setSetupPlayersReady(int setupPlayersReady) {
         SetupPlayersReady = setupPlayersReady;
+    }
+
+    public StringProperty getGamemode() {
+        return gamemode;
+    }
+
+    public void setJogador1Nome(String jogador1Nome) {
+        Jogador1Nome = jogador1Nome;
+    }
+
+    public void setJogador2Nome(String jogador2Nome) {
+        Jogador2Nome = jogador2Nome;
+    }
+
+    public void setGamemode(String gamemode) {
+        this.gamemode.set(gamemode);
     }
 }

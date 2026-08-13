@@ -6,8 +6,8 @@ import javafx.beans.property.StringProperty;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
-import static com.batalhaNaval.UI.Tabuleiro.TelaVencedor;
-import static com.batalhaNaval.UI.Tabuleiro.mudarCorCelula;
+import static com.batalhaNaval.UI.Tabuleiro.*;
+import static com.batalhaNaval.UI.TelaDoJogo.*;
 
 public class GameController {
 
@@ -213,4 +213,6 @@ public class GameController {
             }
         });
     }
+
 }
+
